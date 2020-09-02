@@ -15,17 +15,23 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 
 public class SampleFunctions {
     private static SampleFunctions sampleFunctions = null;
-    public static JFrame frame;
+    public JFrame frame;
 
     //public static void main(String[] args) { getInstance(null);}
 
-    public static void getInstance(JFrame parent){
+    public static SampleFunctions getInstance(JFrame parent) {
         if (sampleFunctions == null) sampleFunctions = new SampleFunctions(parent);
-        frame.toFront();
+
+        return sampleFunctions;
     }
 
     private SampleFunctions(JFrame parent) {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame();
         frame.setIconImage(Settings.iconImage);
         frame.setSize(444, 322);
@@ -42,10 +48,14 @@ public class SampleFunctions {
             InputStream fin = getClass().getResourceAsStream("/ParticleGraphSamples.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(fin));
             String line;
-            while ((line = br.readLine()) != null) {listModel.addElement(line.trim());}
+            while ((line = br.readLine()) != null) {
+                listModel.addElement(line.trim());
+            }
             br.close();
             fin.close();
-        } catch (Exception e){EException.append(e);}
+        } catch (Exception e) {
+            EException.append(e);
+        }
 
         frame.setTitle("Sample Functions - " + listModel.size());
 
@@ -54,8 +64,14 @@ public class SampleFunctions {
         list.setLayoutOrientation(JList.VERTICAL);
         list.setVisibleRowCount(-1);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.addKeyListener(new KAdapter.KeyReleased(e -> {{if (e.getKeyCode() == KeyEvent.VK_ENTER) graphSelectedSample(list);}}));
-        if (listModel.size() > 0) {list.setSelectedIndex((int) (Math.random() * listModel.size()));}
+        list.addKeyListener(new KAdapter.KeyReleased(e -> {
+            {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) graphSelectedSample(list);
+            }
+        }));
+        if (listModel.size() > 0) {
+            list.setSelectedIndex((int) (Math.random() * listModel.size()));
+        }
         panel.add(list, BorderLayout.CENTER);
 
         JScrollPane listScroller = new JScrollPane(list);
@@ -66,14 +82,18 @@ public class SampleFunctions {
         graph.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
         graph.addActionListener(e -> graphSelectedSample(list));
         panel.add(graph, BorderLayout.SOUTH);
+
         frame.setVisible(true);
     }
 
     private void graphSelectedSample(JList<String> list) {
         String selectedSampleFunction = list.getSelectedValue();
-        ParticleGraph.textFields[0].setText(selectedSampleFunction);
-        ParticleGraph.threadGraph(selectedSampleFunction);
+        ParticleGraph.getInstance().textFields[0].setText(selectedSampleFunction);
+        ParticleGraph.getInstance().threadGraph(selectedSampleFunction);
     }
 
-    private void close(){sampleFunctions = null; frame.dispose();}
+    private void close() {
+        frame.dispose();
+        sampleFunctions = null;
+    }
 }

@@ -9,16 +9,25 @@ import static com.engine.ThinkingParticles.SCChoices.*;
 
 public class ParticlePresets {
     private static ParticlePresets scPresetsUI = null;
-    private static JFrame frame;
-    private static JButton[] presetButtons = new JButton[15];
+    private JFrame frame;
+    private JButton[] presetButtons = new JButton[15];
 
-    public static void getInstance() {
-        if (scPresetsUI == null) scPresetsUI = new ParticlePresets();
-        frame.toFront();
+    public static ParticlePresets getInstance() {
+        if (scPresetsUI == null)
+            scPresetsUI = new ParticlePresets();
+
+        scPresetsUI.frame.toFront();
+
+        return scPresetsUI;
     }
 
     private ParticlePresets() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Color Presets :D");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(323, 290);
@@ -26,7 +35,7 @@ public class ParticlePresets {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowClosing(windowEvent -> close()));
         frame.getContentPane().setLayout(null);
-        frame.setLocationRelativeTo(ColorEditor.frame);
+        frame.setLocationRelativeTo(ColorEditor.getInstance().frame);
 
         presetButtons[0] = new JButton("Propane");
         presetButtons[0].setBounds(10, 11, 89, 39);
@@ -105,5 +114,8 @@ public class ParticlePresets {
         frame.setVisible(true);
     }
 
-    public void close(){scPresetsUI = null; frame.dispose();}
+    public void close() {
+        frame.dispose();
+        scPresetsUI = null;
+    }
 }

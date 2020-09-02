@@ -23,8 +23,8 @@ public class VPHandler {
     public static boolean TEARABLE      = false;
 
     public static void handleRagdollClickEvent(MouseEvent e){
-        if (VPhysicsEditor.EDITOR_MODE == Add) {
-            switch (VPhysicsEditor.CREATION_MODE) {
+        if (VPhysicsEditor.getInstance().EDITOR_MODE == Add) {
+            switch (VPhysicsEditor.getInstance().CREATION_MODE) {
                 case Point:
                     VCreations.createPoint(e, randHSLColor(1000, 7000, 0.8f), 25, 100);
                     break;
@@ -50,19 +50,19 @@ public class VPHandler {
                     break;
             }
         }
-        else if (VPhysicsEditor.EDITOR_MODE == VModes.EditorModes.Select || VPhysicsEditor.EDITOR_MODE == VModes.EditorModes.Drag) {
+        else if (VPhysicsEditor.getInstance().EDITOR_MODE == VModes.EditorModes.Select || VPhysicsEditor.getInstance().EDITOR_MODE == VModes.EditorModes.Drag) {
             for (int i = 0; i < Vertices.size(); i++) {
                 Vertex point = Vertices.get(i);
                 if (point.contains(e.getX(), e.getY())) {
                     selectedVertex = point;
-                    VPhysicsEditor.setObjectPropertiesOnSelect(selectedVertex);
-                    VPhysicsEditor.updateJListConstraints(selectedVertex.edges);
+                    VPhysicsEditor.getInstance().setObjectPropertiesOnSelect(selectedVertex);
+                    VPhysicsEditor.getInstance().updateJListConstraints(selectedVertex.edges);
                     break;
                 }
                 else {
                     selectedVertex = null;
-                    VPhysicsEditor.unsetObjectPropertiesOnDeselect();
-                    VPhysicsEditor.updateJListConstraints(null);
+                    VPhysicsEditor.getInstance().unsetObjectPropertiesOnDeselect();
+                    VPhysicsEditor.getInstance().updateJListConstraints(null);
                 }
             }
         }

@@ -13,23 +13,30 @@ import java.awt.event.KeyEvent;
 
 public class ParticleTypeUI {
     public static ParticleTypeUI[] particleTypeUIs = new ParticleTypeUI[2];
+
     public JFrame frame;
     public JTextField textField;
 
     //Make sure type and int given when getInstance is called are the same! If values differ will cause indexOutOfBounds Error
     public static void getInstance(int type, String title) {
-        if (particleTypeUIs[type] == null) particleTypeUIs[type] = new ParticleTypeUI(type, title);
+        if (particleTypeUIs[type] == null)
+            particleTypeUIs[type] = new ParticleTypeUI(type, title);
+
         particleTypeUIs[type].frame.toFront();
     }
 
     private ParticleTypeUI(int type, String title) {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
         frame = new JFrame(title);
         frame.setIconImage(Settings.iconImage);
         frame.setSize(320, 520);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowClosing(e -> close(type)));
-        frame.setLocationRelativeTo(OptionsMenu.frame);
+        frame.setLocationRelativeTo(OptionsMenu.getInstance().frame);
 
         JScrollPane jScrollPane1 = new JScrollPane();
 
@@ -45,7 +52,10 @@ public class ParticleTypeUI {
         textField = new JTextField();
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setFont(new Font(Font.SERIF, Font.PLAIN, 17));
-        textField.addKeyListener(new KAdapter(e -> {if (e.getKeyCode() == KeyEvent.VK_ENTER) getOption(type);}, e -> {}));
+        textField.addKeyListener(new KAdapter(e -> {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) getOption(type);
+        }, e -> {
+        }));
         jPanel1.add(textField, BorderLayout.CENTER);
 
         frame.add(jPanel1, BorderLayout.PAGE_END);
@@ -59,21 +69,26 @@ public class ParticleTypeUI {
         frame.setVisible(true);
     }
 
-    private void getOption(int type){
+    private void getOption(int type) {
         if (!textField.getText().isEmpty()) {
             try {
                 if (type == 0) {
                     if (InputGuard.canParseStringInt(textField.getText())) {
                         ParticleTypeOptions.baseParticleOptions(Integer.parseInt(textField.getText()));
                     }
-                }
-                else if (type == 1) {
+                } else if (type == 1) {
                     if (InputGuard.canParseStringInt(textField.getText())) {
                         ParticleTypeOptions.realFireworksOptions(Integer.parseInt(textField.getText()));
                     }
                 }
-            }catch (Exception ex){EException.append(ex);}
+            } catch (Exception ex) {
+                EException.append(ex);
+            }
         }
     }
-    private void close(int index){particleTypeUIs[index] = null; frame.dispose();}
+
+    private void close(int index) {
+        frame.dispose();
+        particleTypeUIs[index] = null;
+    }
 }

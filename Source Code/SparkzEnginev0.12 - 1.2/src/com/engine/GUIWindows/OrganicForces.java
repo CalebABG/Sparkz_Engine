@@ -10,24 +10,35 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class OrganicForces {
-    private static OrganicForces customForces = null;
+    private static OrganicForces organicForces = null;
+
     public JFrame frame;
     private JTextField forceXTextField, forceYTextField, angleIncrementTextField;
+
     private static Font font = new Font(Font.SERIF, Font.PLAIN, 18);
 
     public static boolean withError = false;
     public static float angleIncrement = 0.05f;
     public static String expressionForceX = "cos(x)", expressionForceY = "sin(x)";
 
-    public static void getInstance(JFrame parent) {
-        if (customForces == null) customForces = new OrganicForces(parent);
-        customForces.frame.toFront();
+    public static OrganicForces getInstance(JFrame parent) {
+        if (organicForces == null)
+            organicForces = new OrganicForces(parent);
+
+        organicForces.frame.toFront();
+
+        return organicForces;
     }
 
     //public static void main(String[] args) {getInstance(null);}
 
-    private OrganicForces(JFrame parent){
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+    private OrganicForces(JFrame parent) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Organic Forces");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(335, 354);
@@ -106,7 +117,7 @@ public class OrganicForces {
         gbc_lblForceYExpression.gridy = 3;
         panel.add(lblForceYExpression, gbc_lblForceYExpression);
 
-        forceYTextField = new JTextField(expressionForceY,10);
+        forceYTextField = new JTextField(expressionForceY, 10);
         forceYTextField.setHorizontalAlignment(SwingConstants.CENTER);
         forceYTextField.setFont(font);
         forceYTextField.addKeyListener(new KAdapter.KeyReleased(e -> {
@@ -139,7 +150,7 @@ public class OrganicForces {
         gbc_lblAngleIncrement.gridy = 5;
         panel.add(lblAngleIncrement, gbc_lblAngleIncrement);
 
-        angleIncrementTextField = new JTextField("" + angleIncrement,10);
+        angleIncrementTextField = new JTextField("" + angleIncrement, 10);
         angleIncrementTextField.setHorizontalAlignment(SwingConstants.CENTER);
         angleIncrementTextField.setFont(font);
         angleIncrementTextField.addKeyListener(new KAdapter.KeyReleased(e -> {
@@ -162,7 +173,7 @@ public class OrganicForces {
         button1.setFont(font);
         button1.addActionListener(e -> setForces());
         GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-        gbc_btnNewButton_1.gridwidth =  2;
+        gbc_btnNewButton_1.gridwidth = 2;
         gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
         gbc_btnNewButton_1.anchor = GridBagConstraints.EAST;
         gbc_btnNewButton_1.insets = new Insets(0, 5, 5, 5);
@@ -172,6 +183,7 @@ public class OrganicForces {
 
         JMenuBar menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
+
         frame.setVisible(true);
     }
 
@@ -179,12 +191,15 @@ public class OrganicForces {
         String fxText = forceXTextField.getText();
         String fyText = forceYTextField.getText();
         String axText = angleIncrementTextField.getText();
-        float tempAngleIncrement = ParticleGraph.guardDouble(axText, ParticleGraph.engine, angleIncrementTextField);
+        float tempAngleIncrement = ParticleGraph.getInstance().guardDouble(axText, ParticleGraph.engine, angleIncrementTextField);
 
         expressionForceX = fxText;
         expressionForceY = fyText;
         angleIncrement = tempAngleIncrement;
     }
 
-    private void close(){customForces = null; frame.dispose();}
+    private void close() {
+        frame.dispose();
+        organicForces = null;
+    }
 }

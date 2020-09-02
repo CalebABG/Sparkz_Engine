@@ -16,14 +16,15 @@ public class GUIText {
     public static final String FireworksOptions = getHtml("/HTML/FireworksOptions.html");
 
 
-    public static String getHtml(String file){
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(GUIText.class.getResourceAsStream(file)))){
+    public static String getHtml(String file) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(GUIText.class.getResourceAsStream(file)))) {
             StringBuilder lines = new StringBuilder(1024);
             String line;
             while ((line = br.readLine()) != null) lines.append(line);
             return lines.toString();
+        } catch (Exception e) {
+            EException.append(e);
         }
-        catch (Exception e){EException.append(e);}
         return null;
     }
 }

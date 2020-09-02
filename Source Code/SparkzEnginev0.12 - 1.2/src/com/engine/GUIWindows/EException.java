@@ -16,18 +16,25 @@ import static com.engine.EngineHelpers.EConstants.*;
 
 public class EException {
     private static EException logger = null;
-    public static JFrame frame;
-    private static JTextArea textArea = new JTextArea();
+
+    public JFrame frame;
+    private JTextArea textArea = new JTextArea();
 
     //public static void main(String[] args) {}
 
-    public static void getInstance() {
+    public static EException getInstance() {
         if (logger == null) logger = new EException();
-        frame.toFront();
+
+        return logger;
     }
 
     private EException() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Exception Log");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(430, 260);
@@ -57,6 +64,7 @@ public class EException {
         scrollPane.setBackground(Color.BLACK);
         scrollPane.getViewport().add(textArea);
         panel.add(scrollPane, BorderLayout.CENTER);
+
         frame.setVisible(true);
     }
 
@@ -67,15 +75,15 @@ public class EException {
     }
 
     public static void append(Exception e) {
-        textArea.append(new SimpleDateFormat("h:mm:ss a").format(new Date()) + " - " + logException(e) + "\n");
+        getInstance().textArea.append(new SimpleDateFormat("h:mm:ss a").format(new Date()) + " - " + logException(e) + "\n");
     }
 
     public static void append(String text) {
-        textArea.append(text + '\n');
+        getInstance().textArea.append(text + '\n');
     }
 
     private void close() {
-        logger = null;
         frame.dispose();
+        logger = null;
     }
 }

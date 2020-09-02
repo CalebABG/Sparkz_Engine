@@ -14,33 +14,43 @@ import static com.engine.EngineHelpers.EINTS.*;
 
 public class SlideEditor {
     private static SlideEditor sliderUI = null;
-    public static JFrame frame;
-    private final int MAX_TICK_LINES = 500;
-    private static Font font = new Font(Font.SERIF, Font.PLAIN, 17);
-    public JPanel ptoptionspanel,rfoptionspanel, ptssopanel, ptspeedspanel;
 
-    public static JSlider ptsslider, ptdrslider, ptfrslider,
-            ptlifeslider,ptwindslider, ptjitterslider,
+    private static Font font = new Font(Font.SERIF, Font.PLAIN, 17);
+
+    private final int MAX_TICK_LINES = 500;
+    public JFrame frame;
+    public JPanel ptoptionspanel, rfoptionspanel, ptssopanel, ptspeedspanel;
+
+    public JSlider ptsslider, ptdrslider, ptfrslider,
+            ptlifeslider, ptwindslider, ptjitterslider,
             ptscminslider, ptscmaxslider, ptfrmaxslider,
-            ptfrminslider, ptdragminslider,ptdragmaxslider,
+            ptfrminslider, ptdragminslider, ptdragmaxslider,
             ptdrspeedslider, ptfrspeedminslider, ptscspeedminslider;
 
-    private JLabel ptslabel, ptsamount,drlabel,dramount,frlabel,
-            framount,ptlifelabel,ptlifeamount,ptwindlabel,ptwindamount,
-            ptjitterlabel,ptjitteramount,ptscslabel,ptscminlabel,ptscmaxlabel,
-            ptfrslabel,ptfrmaxlabel,ptfrminlabel,ptdragmaxlabel,ptdragminlabel,
-            ptdraglabel, ptscspeedlabel, ptscspeedmin,ptfrspeedlabel,ptfrspeedminlabel,ptdrspeedlabel,
+    private JLabel ptslabel, ptsamount, drlabel, dramount, frlabel,
+            framount, ptlifelabel, ptlifeamount, ptwindlabel, ptwindamount,
+            ptjitterlabel, ptjitteramount, ptscslabel, ptscminlabel, ptscmaxlabel,
+            ptfrslabel, ptfrmaxlabel, ptfrminlabel, ptdragmaxlabel, ptdragminlabel,
+            ptdraglabel, ptscspeedlabel, ptscspeedmin, ptfrspeedlabel, ptfrspeedminlabel, ptdrspeedlabel,
             ptdrminspeedlabel, lblMin, lblMax, label, label_1, label_2, label_3;
 
     //public static void main(String[] args) {new SlideEditor();}
 
-    public static void getInstance() {
-        if (sliderUI == null) sliderUI = new SlideEditor();
-        frame.toFront();
+    public static SlideEditor getInstance() {
+        if (sliderUI == null)
+            sliderUI = new SlideEditor();
+
+        sliderUI.frame.toFront();
+
+        return sliderUI;
     }
 
     private SlideEditor() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
         frame = new JFrame("Particle Slide Editor");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(489, 690);
@@ -69,7 +79,7 @@ public class SlideEditor {
 
         ptslabel = new JLabel("Particle Size:");
         ptslabel.setFont(font);
-        
+
         ptslabel.setBounds(10, 32, 106, 22);
         ptoptionspanel.add(ptslabel);
 
@@ -86,8 +96,10 @@ public class SlideEditor {
 
         ptdrslider = new CSlider(0, 200, PARTICLE_DRAG_AMOUNT.value(), new Rectangle(10, 273, 463, 43), 1, MAX_TICKS, true, true, true);
         ptdrslider.addChangeListener(e -> {
-            int particleDrag = ptdrslider.getValue(); dramount.setText(Integer.toString(particleDrag));
-            EngineMethods.setDragAmount(particleDrag); setPaintLabels(ptdrslider, MAX_TICK_LINES);
+            int particleDrag = ptdrslider.getValue();
+            dramount.setText(Integer.toString(particleDrag));
+            EngineMethods.setDragAmount(particleDrag);
+            setPaintLabels(ptdrslider, MAX_TICK_LINES);
         });
         ptoptionspanel.add(ptdrslider);
 
@@ -104,8 +116,10 @@ public class SlideEditor {
 
         ptfrslider = new CSlider(0, 400, FIREWORKS_AMOUNT.value(), new Rectangle(10, 497, 463, 43), 1, MAX_TICKS, true, true, true);
         ptfrslider.addChangeListener(e -> {
-            int fireworksAmount1 = ptfrslider.getValue(); framount.setText(Integer.toString(fireworksAmount1));
-            EngineMethods.setFireworksAmount(fireworksAmount1); setPaintLabels(ptfrslider, MAX_TICK_LINES);
+            int fireworksAmount1 = ptfrslider.getValue();
+            framount.setText(Integer.toString(fireworksAmount1));
+            EngineMethods.setFireworksAmount(fireworksAmount1);
+            setPaintLabels(ptfrslider, MAX_TICK_LINES);
         });
         ptoptionspanel.add(ptfrslider);
 
@@ -149,15 +163,19 @@ public class SlideEditor {
 
         ptlifeslider = new CSlider(0, 200, PARTICLE_BASE_LIFE.value(), new Rectangle(10, 67, 463, 43), 1, MAX_TICKS, true, true, true);
         ptlifeslider.addChangeListener(e -> {
-            int lifeAmount = ptlifeslider.getValue(); ptlifeamount.setText(Integer.toString(lifeAmount));
-            EngineMethods.setLifeAmount(lifeAmount); setPaintLabels(ptlifeslider, MAX_TICK_LINES);
+            int lifeAmount = ptlifeslider.getValue();
+            ptlifeamount.setText(Integer.toString(lifeAmount));
+            EngineMethods.setLifeAmount(lifeAmount);
+            setPaintLabels(ptlifeslider, MAX_TICK_LINES);
         });
         rfoptionspanel.add(ptlifeslider);
 
         ptwindslider = new CSlider(0, 200, FIREWORKS_WIND.value(), new Rectangle(10, 257, 463, 43), 1, MAX_TICKS, true, true, true);
         ptwindslider.addChangeListener(e -> {
-            int windAmount = ptwindslider.getValue(); ptwindamount.setText(Integer.toString(windAmount));
-            EngineMethods.setWindAmount(windAmount); setPaintLabels(ptwindslider, MAX_TICK_LINES);
+            int windAmount = ptwindslider.getValue();
+            ptwindamount.setText(Integer.toString(windAmount));
+            EngineMethods.setWindAmount(windAmount);
+            setPaintLabels(ptwindslider, MAX_TICK_LINES);
         });
         rfoptionspanel.add(ptwindslider);
 
@@ -174,8 +192,10 @@ public class SlideEditor {
 
         ptjitterslider = new CSlider(0, 200, FIREWORKS_JITTER.value(), new Rectangle(10, 468, 463, 43), 1, MAX_TICKS, true, true, true);
         ptjitterslider.addChangeListener(e -> {
-            int jitterAmount = ptjitterslider.getValue(); ptjitteramount.setText(Integer.toString(jitterAmount));
-            EngineMethods.setJitterAmount(jitterAmount); setPaintLabels(ptjitterslider, MAX_TICK_LINES);
+            int jitterAmount = ptjitterslider.getValue();
+            ptjitteramount.setText(Integer.toString(jitterAmount));
+            EngineMethods.setJitterAmount(jitterAmount);
+            setPaintLabels(ptjitterslider, MAX_TICK_LINES);
         });
         rfoptionspanel.add(ptjitterslider);
 
@@ -230,17 +250,21 @@ public class SlideEditor {
         ptscminlabel.setBounds(256, 25, 146, 22);
         ptssopanel.add(ptscminlabel);
 
-        ptscminslider = new CSlider(0, 200, (int)SINGLE_CLICK_SIZE_MIN.value(), new Rectangle(10, 53, 463, 43), 1, MAX_TICKS, true, true, true);
+        ptscminslider = new CSlider(0, 200, (int) SINGLE_CLICK_SIZE_MIN.value(), new Rectangle(10, 53, 463, 43), 1, MAX_TICKS, true, true, true);
         ptscminslider.addChangeListener(e -> {
-            int singleclickmin = ptscminslider.getValue(); ptscminlabel.setText(Integer.toString(singleclickmin));
-            EngineMethods.setSingleClickSizeMin(singleclickmin); setPaintLabels(ptscminslider, MAX_TICK_LINES);
+            int singleclickmin = ptscminslider.getValue();
+            ptscminlabel.setText(Integer.toString(singleclickmin));
+            EngineMethods.setSingleClickSizeMin(singleclickmin);
+            setPaintLabels(ptscminslider, MAX_TICK_LINES);
         });
         ptssopanel.add(ptscminslider);
 
-        ptscmaxslider = new CSlider(0, 200, (int)SINGLE_CLICK_SIZE_MAX.value(), new Rectangle(10, 152, 463, 43), 1, MAX_TICKS, true, true, true);
+        ptscmaxslider = new CSlider(0, 200, (int) SINGLE_CLICK_SIZE_MAX.value(), new Rectangle(10, 152, 463, 43), 1, MAX_TICKS, true, true, true);
         ptscmaxslider.addChangeListener(e -> {
-            int singleclickmax = ptscmaxslider.getValue(); ptscmaxlabel.setText(Integer.toString(singleclickmax));
-            EngineMethods.setSingleClickSizeMax(singleclickmax); setPaintLabels(ptscmaxslider, MAX_TICK_LINES);
+            int singleclickmax = ptscmaxslider.getValue();
+            ptscmaxlabel.setText(Integer.toString(singleclickmax));
+            EngineMethods.setSingleClickSizeMax(singleclickmax);
+            setPaintLabels(ptscmaxslider, MAX_TICK_LINES);
         });
         ptssopanel.add(ptscmaxslider);
 
@@ -253,8 +277,10 @@ public class SlideEditor {
         //Fireworks
         ptfrmaxslider = new CSlider(0, 200, 1, new Rectangle(10, 354, 463, 43), 1, MAX_TICKS, true, true, true);
         ptfrmaxslider.addChangeListener(e -> {
-            int fireworksmax = ptfrmaxslider.getValue(); ptfrmaxlabel.setText(Integer.toString(fireworksmax));
-            EngineMethods.setFireworksSizeMax(fireworksmax); setPaintLabels(ptfrmaxslider, MAX_TICK_LINES);
+            int fireworksmax = ptfrmaxslider.getValue();
+            ptfrmaxlabel.setText(Integer.toString(fireworksmax));
+            EngineMethods.setFireworksSizeMax(fireworksmax);
+            setPaintLabels(ptfrmaxslider, MAX_TICK_LINES);
         });
         ptssopanel.add(ptfrmaxslider);
 
@@ -266,8 +292,10 @@ public class SlideEditor {
 
         ptfrminslider = new CSlider(0, 200, 1, new Rectangle(10, 255, 463, 43), 1, MAX_TICKS, true, true, true);
         ptfrminslider.addChangeListener(e -> {
-            int fireworksmin = ptfrminslider.getValue(); ptfrminlabel.setText(Integer.toString(fireworksmin));
-            EngineMethods.setFireworksSizeMin(fireworksmin); setPaintLabels(ptfrminslider, MAX_TICK_LINES);
+            int fireworksmin = ptfrminslider.getValue();
+            ptfrminlabel.setText(Integer.toString(fireworksmin));
+            EngineMethods.setFireworksSizeMin(fireworksmin);
+            setPaintLabels(ptfrminslider, MAX_TICK_LINES);
         });
         ptssopanel.add(ptfrminslider);
 
@@ -284,10 +312,12 @@ public class SlideEditor {
         ptssopanel.add(ptfrslabel);
 
         //Drag
-        ptdragmaxslider = new CSlider(0, 200, (int)PARTICLE_DRAG_SIZE_MAX.value(), new Rectangle(10, 555, 463, 43), 1, MAX_TICKS, true, true, true);
+        ptdragmaxslider = new CSlider(0, 200, (int) PARTICLE_DRAG_SIZE_MAX.value(), new Rectangle(10, 555, 463, 43), 1, MAX_TICKS, true, true, true);
         ptdragmaxslider.addChangeListener(e -> {
-            int dragmax = ptdragmaxslider.getValue(); ptdragmaxlabel.setText(Integer.toString(dragmax));
-            EngineMethods.setDragSizeMax(dragmax); setPaintLabels(ptdragmaxslider, MAX_TICK_LINES);
+            int dragmax = ptdragmaxslider.getValue();
+            ptdragmaxlabel.setText(Integer.toString(dragmax));
+            EngineMethods.setDragSizeMax(dragmax);
+            setPaintLabels(ptdragmaxslider, MAX_TICK_LINES);
         });
         ptssopanel.add(ptdragmaxslider);
 
@@ -297,10 +327,12 @@ public class SlideEditor {
         ptdragmaxlabel.setBounds(256, 527, 146, 22);
         ptssopanel.add(ptdragmaxlabel);
 
-        ptdragminslider = new CSlider(0, 200, (int)PARTICLE_DRAG_SIZE_MIN.value(), new Rectangle(10, 456, 463, 43), 1, MAX_TICKS, true, true, true);
+        ptdragminslider = new CSlider(0, 200, (int) PARTICLE_DRAG_SIZE_MIN.value(), new Rectangle(10, 456, 463, 43), 1, MAX_TICKS, true, true, true);
         ptdragminslider.addChangeListener(e -> {
-            int dragmin = ptdragminslider.getValue(); ptdragminlabel.setText(Integer.toString(dragmin));
-            EngineMethods.setDragSizeMin(dragmin); setPaintLabels(ptdragminslider, MAX_TICK_LINES);
+            int dragmin = ptdragminslider.getValue();
+            ptdragminlabel.setText(Integer.toString(dragmin));
+            EngineMethods.setDragSizeMin(dragmin);
+            setPaintLabels(ptdragminslider, MAX_TICK_LINES);
         });
         ptssopanel.add(ptdragminslider);
 
@@ -362,10 +394,12 @@ public class SlideEditor {
         ptscspeedmin.setBounds(190, 21, 146, 22);
         ptspeedspanel.add(ptscspeedmin);
 
-        ptscspeedminslider = new CSlider(0, 200, (SINGLE_CLICK_SPEED.value() <= 1) ? 1 : (int)(SINGLE_CLICK_SPEED.value()), new Rectangle(10, 82, 463, 43), 1, MAX_TICKS, true, true, true);
+        ptscspeedminslider = new CSlider(0, 200, (SINGLE_CLICK_SPEED.value() <= 1) ? 1 : (int) (SINGLE_CLICK_SPEED.value()), new Rectangle(10, 82, 463, 43), 1, MAX_TICKS, true, true, true);
         ptscspeedminslider.addChangeListener(e -> {
-            int singleclickspeed = ptscspeedminslider.getValue(); ptscspeedmin.setText(Integer.toString(singleclickspeed));
-            EngineMethods.setSingleClickSpeed(singleclickspeed); setPaintLabels(ptscspeedminslider, MAX_TICK_LINES);
+            int singleclickspeed = ptscspeedminslider.getValue();
+            ptscspeedmin.setText(Integer.toString(singleclickspeed));
+            EngineMethods.setSingleClickSpeed(singleclickspeed);
+            setPaintLabels(ptscspeedminslider, MAX_TICK_LINES);
         });
         ptspeedspanel.add(ptscspeedminslider);
 
@@ -382,10 +416,12 @@ public class SlideEditor {
         ptfrspeedlabel.setBounds(10, 223, 132, 22);
         ptspeedspanel.add(ptfrspeedlabel);
 
-        ptfrspeedminslider = new CSlider(0, 200, (FIREWORKS_SPEED.value() <= 1) ? 1 : (int)(FIREWORKS_SPEED.value()), new Rectangle(10, 284, 463, 43), 1, MAX_TICKS, true, true, true);
+        ptfrspeedminslider = new CSlider(0, 200, (FIREWORKS_SPEED.value() <= 1) ? 1 : (int) (FIREWORKS_SPEED.value()), new Rectangle(10, 284, 463, 43), 1, MAX_TICKS, true, true, true);
         ptfrspeedminslider.addChangeListener(e -> {
-            int fireworksSpeed = ptfrspeedminslider.getValue(); ptfrspeedminlabel.setText(Integer.toString(fireworksSpeed));
-            EngineMethods.setFireworksSpeed(fireworksSpeed); setPaintLabels(ptfrspeedminslider, MAX_TICK_LINES);
+            int fireworksSpeed = ptfrspeedminslider.getValue();
+            ptfrspeedminlabel.setText(Integer.toString(fireworksSpeed));
+            EngineMethods.setFireworksSpeed(fireworksSpeed);
+            setPaintLabels(ptfrspeedminslider, MAX_TICK_LINES);
         });
         ptspeedspanel.add(ptfrspeedminslider);
 
@@ -402,17 +438,27 @@ public class SlideEditor {
         ptdrminspeedlabel.setBounds(190, 424, 146, 22);
         ptspeedspanel.add(ptdrminspeedlabel);
 
-        ptdrspeedslider = new CSlider(0, 200, (PARTICLE_DRAG_SPEED.value() <= 1) ? 1 : (int)(PARTICLE_DRAG_SPEED.value()), new Rectangle(10, 485, 463, 43), 1, MAX_TICKS, true, true, true);
+        ptdrspeedslider = new CSlider(0, 200, (PARTICLE_DRAG_SPEED.value() <= 1) ? 1 : (int) (PARTICLE_DRAG_SPEED.value()), new Rectangle(10, 485, 463, 43), 1, MAX_TICKS, true, true, true);
         ptdrspeedslider.addChangeListener(e -> {
-            int dragSpeed = ptdrspeedslider.getValue(); ptdrminspeedlabel.setText(Integer.toString(dragSpeed));
-            EngineMethods.setDragSpeed(dragSpeed); setPaintLabels(ptdrspeedslider, MAX_TICK_LINES);
+            int dragSpeed = ptdrspeedslider.getValue();
+            ptdrminspeedlabel.setText(Integer.toString(dragSpeed));
+            EngineMethods.setDragSpeed(dragSpeed);
+            setPaintLabels(ptdrspeedslider, MAX_TICK_LINES);
         });
         ptspeedspanel.add(ptdrspeedslider);
         frame.setVisible(true);
     }
 
     private static void setPaintLabels(JSlider slider, int maxTickLines) {
-        if (slider.getMaximum() > maxTickLines) {slider.setPaintLabels(false);}else {slider.setPaintLabels(true);}
+        if (slider.getMaximum() > maxTickLines) {
+            slider.setPaintLabels(false);
+        } else {
+            slider.setPaintLabels(true);
+        }
     }
-    public void close(){sliderUI = null; frame.dispose();}
+
+    public void close() {
+        frame.dispose();
+        sliderUI = null;
+    }
 }

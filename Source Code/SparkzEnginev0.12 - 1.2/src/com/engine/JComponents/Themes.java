@@ -27,9 +27,9 @@ public class Themes {
         Color borderColor = keyColorbg.darker();
         Border border = BorderFactory.createLineBorder(borderColor);
 
-        for (JMenu menu : CMenuBar.menus) menu.getPopupMenu().setBorder(border);
+        for (JMenu menu : menuBar.menus) menu.getPopupMenu().setBorder(border);
 
-        for (JMenuItem menuItem : CMenuBar.menuItems) {
+        for (JMenuItem menuItem : menuBar.menuItems) {
             menuItem.setBackground(keyColorbg);
             menuItem.setForeground(keyColorfg);
         }

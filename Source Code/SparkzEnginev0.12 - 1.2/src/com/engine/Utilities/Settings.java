@@ -27,7 +27,7 @@ public class Settings {
     public static String settings_file_path = engine_settings_folder_path + "/" + settings_file_name;
     public static String colors_file_path = engine_settings_folder_path + "/" + colors_file_name;
 
-    public static final List<String> userSavedColors = new ArrayList<>(1000);
+    public static final List<String> userSavedColors = new ArrayList<>(5000);
 
     public static String getProjectTimespan(){return Period.between(LocalDate.now(), LocalDate.of(2015, Month.NOVEMBER, 22)).toString();}
     public static boolean settingsFileExists(){return Files.exists(Paths.get(settings_file_path));}

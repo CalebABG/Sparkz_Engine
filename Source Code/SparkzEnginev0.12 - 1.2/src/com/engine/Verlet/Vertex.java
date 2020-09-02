@@ -1,14 +1,16 @@
 package com.engine.Verlet;
 
 import com.engine.EngineHelpers.EngineMethods;
+import com.engine.GUIWindows.VPhysicsEditor;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.engine.EngineHelpers.EConstants.*;
-import static com.engine.GUIWindows.VPhysicsEditor.selectionshowpoint_checkbox;
 import static com.engine.Verlet.VSim.*;
 import static org.apache.commons.math3.util.FastMath.*;
 
@@ -65,12 +67,11 @@ public class Vertex {
         this.pinned = pinned;
     }
 
-    public void accelerate(){
+    public void accelerate() {
         if (pinned) {
             currX = prevX;
             currY = prevY;
-        }
-        else{
+        } else {
             gravity = ZERO_GRAVITY ? 0.0f : GConstant;
 
             float tempX = currX, tempY = currY;
@@ -83,9 +84,11 @@ public class Vertex {
         }
     }
 
-    public void solveConstraints() {for (int i = 0; i < edges.size(); i++) edges.get(i).solve();}
+    public void solveConstraints() {
+        for (int i = 0; i < edges.size(); i++) edges.get(i).solve();
+    }
 
-    public void solveCollisions (Vertex p2, boolean preserveImpulse) {
+    public void solveCollisions(Vertex p2, boolean preserveImpulse) {
         float vx = 0;
         float vy = 0;
         float canvasWidth = canvas.getWidth();
@@ -152,7 +155,9 @@ public class Vertex {
     }
 
     public void draw() {
-        if (!edges.isEmpty()) {for (int i = 0; i < edges.size(); i++) edges.get(i).draw();}
+        if (!edges.isEmpty()) {
+            for (int i = 0; i < edges.size(); i++) edges.get(i).draw();
+        }
 
         if (this == dragVertex) {
             graphics2D.setColor(color);
@@ -160,34 +165,51 @@ public class Vertex {
             graphics2D.fill(new Ellipse2D.Float(currX - radius, currY - radius, 2 * radius, 2 * radius));
         }
 
-        if (this == selectedVertex && (selectionshowpoint_checkbox != null && selectionshowpoint_checkbox.isSelected())){
+        if (this == selectedVertex && (VPhysicsEditor.getInstance().selectionshowpoint_checkbox != null && VPhysicsEditor.getInstance().selectionshowpoint_checkbox.isSelected())) {
             graphics2D.setColor(color);
             graphics2D.fill(new Ellipse2D.Float(currX - radius, currY - radius, 2 * radius, 2 * radius));
             graphics2D.setColor(Color.green);
             float scale = 3.0f;
             graphics2D.draw(new Ellipse2D.Float(currX - ((scale / 2) * radius), currY - ((scale / 2) * radius), scale * radius, scale * radius));
-        }
-        else {
+        } else {
             graphics2D.setColor(color);
             graphics2D.fill(new Ellipse2D.Float(currX - radius, currY - radius, 2 * radius, 2 * radius));
         }
     }
 
-    public boolean contains(float x, float y){
+    public boolean contains(float x, float y) {
         float dx = abs(currX - x);
         float dy = abs(currY - y);
         return hypot(dx, dy) < radius;
     }
 
-    public final float getVelocityX(){return currX - prevX;}
-    public final float getVelocityY(){return currY - prevY;}
+    public final float getVelocityX() {
+        return currX - prevX;
+    }
 
-    public float getDistance(Vertex p) {return (float) hypot(currX - p.currX, currY - p.currY);}
-    public float getDistance(Vect2 p) {return (float) hypot(currX - p.x, currY - p.y);}
+    public final float getVelocityY() {
+        return currY - prevY;
+    }
 
-    public void attachTo(Vertex P, float restingDist, float stiff) {attachTo(P, restingDist, stiff, 30, true);}
-    public void attachTo(Vertex P, float restingDist, float stiff, boolean drawLink) {attachTo(P, restingDist, stiff, 30, drawLink);}
-    public void attachTo(Vertex P, float restingDist, float stiff, float tearSensitivity) {attachTo(P, restingDist, stiff, tearSensitivity, true);}
+    public float getDistance(Vertex p) {
+        return (float) hypot(currX - p.currX, currY - p.currY);
+    }
+
+    public float getDistance(Vect2 p) {
+        return (float) hypot(currX - p.x, currY - p.y);
+    }
+
+    public void attachTo(Vertex P, float restingDist, float stiff) {
+        attachTo(P, restingDist, stiff, 30, true);
+    }
+
+    public void attachTo(Vertex P, float restingDist, float stiff, boolean drawLink) {
+        attachTo(P, restingDist, stiff, 30, drawLink);
+    }
+
+    public void attachTo(Vertex P, float restingDist, float stiff, float tearSensitivity) {
+        attachTo(P, restingDist, stiff, tearSensitivity, true);
+    }
 
     public void attachTo(Vertex P, float restingDist, float stiff, float tearSensitivity, boolean drawLink) {
         Edge lnk = new Edge(this, P, restingDist, stiff, tearSensitivity, drawLink);
@@ -199,11 +221,21 @@ public class Vertex {
         edges.add(lnk);
     }
 
-    public void removeLink(Edge lnk) {edges.remove(lnk);}
+    public void removeLink(Edge lnk) {
+        edges.remove(lnk);
+    }
 
-    public void togglePin(){pinned = EngineMethods.toggle(pinned);}
-    public void isPinned(boolean pinned) {this.pinned = pinned;}
-    public void unPin(){pinned = false;}
+    public void togglePin() {
+        pinned = EngineMethods.toggle(pinned);
+    }
+
+    public void isPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
+
+    public void unPin() {
+        pinned = false;
+    }
 
     public String toString() {
         return "Pos: (" + dcFormat.format(currX) + " , " + dcFormat.format(currY) +

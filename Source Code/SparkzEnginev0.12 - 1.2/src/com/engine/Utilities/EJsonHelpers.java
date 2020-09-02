@@ -148,7 +148,7 @@ public class EJsonHelpers {
 
     public static void setGlobalEngineVariables(){
         EngineMethods.setEngineTitleState();
-        CMenuBar.updateAllRadios();
+        menuBar.updateAllRadios();
     }
 
     public static int constrain(int default_, int value, int min, int max){

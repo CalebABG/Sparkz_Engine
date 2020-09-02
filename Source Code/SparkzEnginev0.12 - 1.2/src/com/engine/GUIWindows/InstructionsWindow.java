@@ -10,19 +10,26 @@ import java.awt.event.KeyEvent;
 
 public class InstructionsWindow {
     private static InstructionsWindow[] windows = new InstructionsWindow[2];
+
     private int index;
     public JFrame frame;
 
     //Make sure type and int given when getInstance is called are the same! If values differ will cause indexOutOfBounds Error
-    public static void getInstance(int type, JFrame parent, int w, int h, String title, String instructions) {
+    public static InstructionsWindow getInstance(int type, JFrame parent, int w, int h, String title, String instructions) {
         if (windows[type] == null)
             windows[type] = new InstructionsWindow(type, parent, w, h, title, instructions);
 
         windows[type].frame.toFront();
+
+        return windows[type];
     }
 
     private InstructionsWindow(int type, JFrame parent, int w, int h, String title, String instructions) {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
 
         frame = new JFrame(title);
         frame.setIconImage(Settings.iconImage);
@@ -44,9 +51,16 @@ public class InstructionsWindow {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().add(label);
         panel.add(scrollPane, BorderLayout.CENTER);
+
         frame.setVisible(true);
     }
 
-    private void close(){windows[index] = null; frame.dispose();}
-    private void close(KeyEvent e) {if (e.getKeyCode() == KeyEvent.VK_ESCAPE) close();}
+    private void close() {
+        frame.dispose();
+        windows[index] = null;
+    }
+
+    private void close(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) close();
+    }
 }

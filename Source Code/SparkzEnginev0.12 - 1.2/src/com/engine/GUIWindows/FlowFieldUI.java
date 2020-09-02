@@ -12,8 +12,7 @@ import static com.engine.Utilities.InputGuard.floatTextfieldGuardDefault;
 
 public class FlowFieldUI {
     public static FlowFieldUI flowFieldUI = null;
-    public static JFrame frame;
-    public static final JTextField[] fields = new JTextField[8];
+
     private static final Font font = new Font(Font.SERIF, Font.PLAIN, 18);
 
     public static float noiseX = 0.008f;
@@ -25,13 +24,26 @@ public class FlowFieldUI {
     public static float velocityLimit = 4.3f;
     public static float velocityMagnitude = 0.2f;
 
-    public static void getInstance(JFrame p) {
-        if (flowFieldUI == null) flowFieldUI = new FlowFieldUI(p);
-        frame.toFront();
+    public JFrame frame;
+    public JTextField[] fields = new JTextField[8];
+
+
+    public static FlowFieldUI getInstance(JFrame parentFrame) {
+        if (flowFieldUI == null)
+            flowFieldUI = new FlowFieldUI(parentFrame);
+
+        flowFieldUI.frame.toFront();
+
+        return flowFieldUI;
     }
 
-    private FlowFieldUI(JFrame parent){
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+    private FlowFieldUI(JFrame parent) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Flow Field Editor");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(350, 440);
@@ -227,10 +239,14 @@ public class FlowFieldUI {
         gbc_setFlowBtn.gridy = 8;
         panel.add(setFlowBtn, gbc_setFlowBtn);
 
-        for (JTextField f : fields){
+        for (JTextField f : fields) {
             f.addKeyListener(new KAdapter.KeyReleased(e -> {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                    try {setFlow();}catch (Exception g){EException.append(g);}
+                    try {
+                        setFlow();
+                    } catch (Exception g) {
+                        EException.append(g);
+                    }
             }));
         }
 
@@ -249,7 +265,7 @@ public class FlowFieldUI {
     }
 
     private void close() {
-        flowFieldUI = null;
         frame.dispose();
+        flowFieldUI = null;
     }
 }

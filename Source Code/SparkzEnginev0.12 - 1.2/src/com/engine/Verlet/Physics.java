@@ -8,7 +8,6 @@ import java.util.List;
 
 import static com.engine.EngineHelpers.EBOOLS.*;
 import static com.engine.EngineHelpers.EConstants.*;
-import static com.engine.GUIWindows.VPhysicsEditor.showselectionconstraint_checkbox;
 import static com.engine.Verlet.Vertex.Vertices;
 import static com.engine.Verlet.VSim.*;
 
@@ -37,12 +36,12 @@ public class Physics {
     public static void render() {
         for (int i = 0; i < Vertices.size(); i++) Vertices.get(i).draw();
 
-        if (VPhysicsEditor.vPhysicsEditorInstance != null && selectedVertex != null) {
-            List<Integer> selectedPointConstraintList = VPhysicsEditor.constraintJlist.getSelectedValuesList();
+        if (VPhysicsEditor.getInstance() != null && selectedVertex != null) {
+            List<Integer> selectedPointConstraintList = VPhysicsEditor.getInstance().constraintJlist.getSelectedValuesList();
 
             // Check whether the list of constraints is empty; check if the point has any constrains (if the first index in the array
             // is not -1; and check whether to show the constraint at all (checkbox)
-            if (!selectedPointConstraintList.isEmpty() && (selectedPointConstraintList.get(0) != -1) && showselectionconstraint_checkbox.isSelected()) {
+            if (!selectedPointConstraintList.isEmpty() && (selectedPointConstraintList.get(0) != -1) && VPhysicsEditor.getInstance().showselectionconstraint_checkbox.isSelected()) {
                 for (int i = 0; i < selectedPointConstraintList.size(); i++) {
                     Vertex constraintPoint = selectedVertex.edges.get(selectedPointConstraintList.get(i)).p2;
 
@@ -76,7 +75,7 @@ public class Physics {
      * Handles the interaction between the mouse pointer and Verlet physics objects
      */
     private static void handleMouseInteraction() {
-        if (VPhysicsEditor.EDITOR_MODE == VModes.EditorModes.Drag) {
+        if (VPhysicsEditor.getInstance().EDITOR_MODE == VModes.EditorModes.Drag) {
             //  Handle if the Left mouse button is held down in drag mode
             if (LEFT_MOUSE_IS_DOWN.value()) {
                 //  If the the point we want to drag isn't null and if the engine isn't paused move it around
@@ -98,8 +97,8 @@ public class Physics {
                         if (searchVertex.contains(Mouse.x, Mouse.y)) {
                             dragVertex = searchVertex;
                             selectedVertex = searchVertex;
-                            VPhysicsEditor.setObjectPropertiesOnSelect(selectedVertex);
-                            VPhysicsEditor.updateJListConstraints(selectedVertex.edges);
+                            VPhysicsEditor.getInstance().setObjectPropertiesOnSelect(selectedVertex);
+                            VPhysicsEditor.getInstance().updateJListConstraints(selectedVertex.edges);
                             found = true;
                         }
                     }
@@ -117,7 +116,7 @@ public class Physics {
                     if (tear_distance < mouseTearSize) {
                         if (searchVertex == selectedVertex) {
                             searchVertex.edges.clear();
-                            VPhysicsEditor.updateJListConstraints(selectedVertex.edges);
+                            VPhysicsEditor.getInstance().updateJListConstraints(selectedVertex.edges);
                         }
                         else searchVertex.edges.clear();
                     }

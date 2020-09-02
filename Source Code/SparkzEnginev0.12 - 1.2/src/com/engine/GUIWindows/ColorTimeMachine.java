@@ -6,39 +6,52 @@ import com.engine.ParticleTypes.Interfaces.ThinkingColors;
 import com.engine.ThinkingParticles.SCChoices;
 import com.engine.Utilities.ColorUtility;
 import com.engine.Utilities.Settings;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.engine.EngineHelpers.EConstants.EFrame;
 import static com.engine.Utilities.H5Util.HCenter;
 import static com.engine.Utilities.Settings.convertColors;
 
 public class ColorTimeMachine {
     public static ColorTimeMachine timeMachine = null;
-    public static JFrame frame;
-    public static int index = 0;
-    public static final String title = "Color Time Machine";
+
     private static Font font = new Font(Font.SERIF, Font.BOLD, 13);
-    public static CLabel[] labels = new CLabel[5];
-    public static JToggleButton colors_info;
-    public static List<String> colorList = new ArrayList<>();
+
+    public JFrame frame;
+    public int index = 0;
+    public final String title = "Color Time Machine";
+    public CLabel[] labels = new CLabel[5];
+    public JToggleButton colorsInfoToggleButton;
+    public List<String> colorList = new ArrayList<>();
 
     //public static void main(String[] args) {getInstance();}
 
-    public static void getInstance() {
-        if (timeMachine == null) timeMachine = new ColorTimeMachine();
-        frame.toFront();
+    public static ColorTimeMachine getInstance() {
+        if (timeMachine == null)
+            timeMachine = new ColorTimeMachine();
+
+        timeMachine.frame.toFront();
+
+        return timeMachine;
     }
 
     private ColorTimeMachine() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame(title + " - Colors Seen: " + colorList.size());
         frame.setIconImage(Settings.iconImage);
         frame.setSize(688, 206);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowClosing(windowEvent -> close()));
-        frame.setLocationRelativeTo(ColorEditor.frame == null ? EFrame : ColorEditor.frame);
+        frame.setLocationRelativeTo(ColorEditor.getInstance() == null ? EFrame : ColorEditor.getInstance().frame);
 
         JScrollPane scrollPane = new JScrollPane();
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -60,10 +73,10 @@ public class ColorTimeMachine {
         set_colors.addActionListener(e -> setColors());
         buttons_panel.add(set_colors);
 
-        colors_info = new JToggleButton("Show Values");
-        colors_info.setFont(font);
-        colors_info.addItemListener(e -> showColorValues());
-        buttons_panel.add(colors_info);
+        colorsInfoToggleButton = new JToggleButton("Show Values");
+        colorsInfoToggleButton.setFont(font);
+        colorsInfoToggleButton.addItemListener(e -> showColorValues());
+        buttons_panel.add(colorsInfoToggleButton);
 
         JButton last = new JButton("Last Color");
         last.addActionListener(e -> colorPager(0));
@@ -155,11 +168,11 @@ public class ColorTimeMachine {
 
     private void colorPager(int dir) {
         handleButtons(dir);
-        if (colors_info.isSelected()) updateColorValues();
+        if (colorsInfoToggleButton.isSelected()) updateColorValues();
     }
 
     private void showColorValues() {
-        if (colors_info.isSelected()) updateColorValues();
+        if (colorsInfoToggleButton.isSelected()) updateColorValues();
         else for (CLabel label : labels) label.setText("");
     }
 
@@ -171,7 +184,7 @@ public class ColorTimeMachine {
             colorList.clear();
             index = 0;
             updateLabelsBackgroundColors();
-            if (colors_info.isSelected()) updateColorValues();
+            if (colorsInfoToggleButton.isSelected()) updateColorValues();
             frame.setTitle(title + " - Colors Seen: " + colorList.size());
         }
     }
@@ -182,11 +195,11 @@ public class ColorTimeMachine {
     }
 
     //Resource: http://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
-    public static int isDark(Color c){
+    public static int isDark(Color c) {
         return ((c.getRed() << 5) + (c.getGreen() << 6) + (c.getBlue() << 2)) / 100;
     }
 
-    public static void updateColorValues() {
+    public void updateColorValues() {
         for (CLabel label : labels) {
             Color lableBGColor = label.getBackground();
             String labelBGText = label.getBGColorText();
@@ -194,15 +207,14 @@ public class ColorTimeMachine {
             if (isDark(lableBGColor) >= 55) {
                 label.setText(labelBGText);
                 label.setForeground(Color.black);
-            }
-            else {
+            } else {
                 label.setText(labelBGText);
                 label.setForeground(Color.white);
             }
         }
     }
 
-    private static void handleButtons(int dir) {
+    private void handleButtons(int dir) {
         //Last color
         if (dir == 0) {
             if (colorList.size() > 0) {
@@ -223,16 +235,17 @@ public class ColorTimeMachine {
         }
     }
 
-    public static void addColor(Color[] colors) {
+    public void addColor(Color[] colors) {
         colorList.add(ColorUtility.getThinkingParticlesStrings(colors));
         index = colorList.size() - 1;
+
         if (timeMachine != null && labels != null) {
             updateLabelsBackgroundColors();
             frame.setTitle(title + " - Colors Seen: " + colorList.size());
         }
     }
 
-    private static void setLabelsBackgroundColor(Color[] colors) {
+    private void setLabelsBackgroundColor(Color[] colors) {
         labels[0].setBackground(colors[0]);
         labels[1].setBackground(colors[1]);
         labels[2].setBackground(colors[2]);
@@ -240,12 +253,16 @@ public class ColorTimeMachine {
         labels[4].setBackground(colors[4]);
     }
 
-    private static void updateLabelsBackgroundColors() {
-        if (colorList.size() > 0)
+    private void updateLabelsBackgroundColors() {
+        if (colorList.size() > 0) {
             setLabelsBackgroundColor(convertColors(index, colorList));
-        else
+        } else {
             setLabelsBackgroundColor(ThinkingColors.COLORS);
+        }
     }
 
-    private void close(){timeMachine = null; frame.dispose();}
+    private void close() {
+        frame.dispose();
+        timeMachine = null;
+    }
 }

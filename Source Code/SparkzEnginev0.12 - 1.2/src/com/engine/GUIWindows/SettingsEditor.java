@@ -1,5 +1,6 @@
 package com.engine.GUIWindows;
 
+import com.engine.EngineHelpers.EConstants;
 import com.engine.EngineHelpers.EModes;
 import com.engine.J8Helpers.Extensions.KAdapter;
 import com.engine.J8Helpers.Extensions.WindowClosing;
@@ -16,27 +17,34 @@ import static com.engine.EngineHelpers.EBOOLS.*;
 import static com.engine.EngineHelpers.EConstants.*;
 import static com.engine.EngineHelpers.EFLOATS.*;
 import static com.engine.EngineHelpers.EINTS.*;
-import static com.engine.JComponents.CMenuBar.updateAllRadios;
 import static com.engine.Utilities.InputGuard.floatTextfieldGuardDefault;
 import static com.engine.Utilities.InputGuard.intTextfieldGuardDefault;
 
 public class SettingsEditor {
     private static SettingsEditor settingsEditor = null;
-    public static JFrame frame;
-    public static JPanel panel;
-    private static CTextField[] textFields = new CTextField[32];
+
     private static Font menuFont = new Font(Font.SERIF, Font.PLAIN, 17);
     private static Font textFieldFont = new Font(Font.SERIF, Font.PLAIN, 18);
 
+    public JFrame frame;
+    public JPanel panel;
+    private CTextField[] textFields = new CTextField[32];
+
     //public static void main(String[] args) {}
 
-    public static void getInstance() {
+    public static SettingsEditor getInstance() {
         if (settingsEditor == null) settingsEditor = new SettingsEditor();
-        frame.toFront();
+
+        return settingsEditor;
     }
 
     private SettingsEditor() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Settings Editor");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(670, 500);
@@ -64,7 +72,10 @@ public class SettingsEditor {
         JButton setSettingsBtn = new JButton("Set Settings");
         setSettingsBtn.setMargin(new Insets(1, 1, 1, 1));
         setSettingsBtn.setFont(menuFont);
-        setSettingsBtn.addActionListener(e -> {setSettings(); updateAllRadios();});
+        setSettingsBtn.addActionListener(e -> {
+            setSettings();
+            EConstants.menuBar.updateAllRadios();
+        });
         menuBar.add(setSettingsBtn);
 
         menuBar.add(Box.createHorizontalStrut(8));
@@ -308,7 +319,7 @@ public class SettingsEditor {
 
     private void saveButton() {
         setSettings();
-        updateAllRadios();
+        EConstants.menuBar.updateAllRadios();
         Settings.saveSettings();
     }
 
@@ -352,19 +363,18 @@ public class SettingsEditor {
         TOGGLE_DUPLEX_MODE.setValue(getBoolFromString(TOGGLE_DUPLEX_MODE.value(), textFields[31].getText()));
     }
 
-    private static int constrain(int min, int max, int def, String s){
-        if (!s.isEmpty() && InputGuard.canParseStringInt(s)){
+    private int constrain(int min, int max, int def, String s) {
+        if (!s.isEmpty() && InputGuard.canParseStringInt(s)) {
             int val = Integer.parseInt(s);
             return EJsonHelpers.constrain(def, val, min, max);
-        }
-        else return def;
+        } else return def;
     }
 
-    private static boolean getBoolFromString(boolean def, String input) {
+    private boolean getBoolFromString(boolean def, String input) {
         return input.equalsIgnoreCase("true") || !input.equalsIgnoreCase("false") && def;
     }
 
-    private static void refreshUI() {
+    private void refreshUI() {
         textFields[0].setText(ENGINE_MODE.getValueS());
         textFields[1].setText(PARTICLE_TYPE.getValueS());
         textFields[2].setText(PARTICLE_GRAVITATION_MODE.getValueS());
@@ -405,12 +415,12 @@ public class SettingsEditor {
         }
     }
 
-    private static void clearText() {
+    private void clearText() {
         for (CTextField textField : textFields) textField.setText("");
     }
 
     public void close() {
-        settingsEditor = null;
         frame.dispose();
+        settingsEditor = null;
     }
 }

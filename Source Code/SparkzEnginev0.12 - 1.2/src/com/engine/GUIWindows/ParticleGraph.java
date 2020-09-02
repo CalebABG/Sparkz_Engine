@@ -14,6 +14,7 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.swing.*;
@@ -24,23 +25,28 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+
 import static com.engine.EngineHelpers.EConstants.*;
 import static org.apache.commons.math3.util.FastMath.pow;
 
 public class ParticleGraph {
     // Best x-scale for all functions = 0.02
     private static ParticleGraph particleGraph = null;
-    public static JFrame frame;
-    public static final CTextField[] textFields = new CTextField[5];
-    private static RButton graphButton;
     private static final Font font = new Font(Font.SERIF, Font.PLAIN, 18);
-    public static boolean isOkToGraph = true;
+
+    public JFrame frame;
+    public CTextField[] textFields = new CTextField[5];
+    private RButton graphButton;
+    public boolean isOkToGraph = true;
 
     public static final ScriptEngine engine = new NashornScriptEngineFactory().getScriptEngine();
+
     static {
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(ParticleGraph.class.getResourceAsStream("/GraphFunc.js")))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(ParticleGraph.class.getResourceAsStream("/GraphFunc.js")))) {
             engine.eval(br);
-        } catch (Exception var1) {EException.append(var1);}
+        } catch (Exception var1) {
+            EException.append(var1);
+        }
     }
 
     private static final String[] suggestions = {
@@ -62,13 +68,22 @@ public class ParticleGraph {
 
     //public static void main(String[] args){getInstance();}
 
-    public static void getInstance() {
-        if (particleGraph == null) particleGraph = new ParticleGraph();
-        frame.toFront();
+    public static ParticleGraph getInstance() {
+        if (particleGraph == null)
+            particleGraph = new ParticleGraph();
+
+        particleGraph.frame.toFront();
+
+        return particleGraph;
     }
 
     private ParticleGraph() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Particle Graph Editor");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(460, 280);
@@ -86,8 +101,8 @@ public class ParticleGraph {
         gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
         gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         panel.setLayout(gbl_panel);
 
         JMenuBar menuBar = new JMenuBar();
@@ -113,7 +128,7 @@ public class ParticleGraph {
         textFields[0] = new CTextField(mathExpression, new Font(Font.SERIF, Font.PLAIN, 20), new Insets(0, 0, 5, 0), GridBagConstraints.HORIZONTAL, new int[]{0, 1});
         textFields[0].gridBagConstraints.gridwidth = 2;
         textFields[0].setFocusTraversalKeysEnabled(false);
-        textFields[0].addKeyListener(new KAdapter(e -> textFields[0].setForeground(Color.black), ParticleGraph::isEnter));
+        textFields[0].addKeyListener(new KAdapter(e -> textFields[0].setForeground(Color.black), this::isEnter));
 
         AutoCompletion ac = new AutoCompletion(autoCompleteProvider);
         ac.setListCellRenderer(cellRenderer);
@@ -142,7 +157,7 @@ public class ParticleGraph {
         panel.add(yscale, yscale.gridBagConstraints);
 
         textFields[1] = new CTextField("" + scaleY, font, new Insets(0, 0, 5, 0), GridBagConstraints.HORIZONTAL, new int[]{1, 11});
-        textFields[1].addKeyListener(new KAdapter(e -> textFields[1].setForeground(Color.black), ParticleGraph::isEnter));
+        textFields[1].addKeyListener(new KAdapter(e -> textFields[1].setForeground(Color.black), this::isEnter));
         panel.add(textFields[1], textFields[1].gridBagConstraints);
 
         RLabel xscale = new RLabel("X Scale", font, GridBagConstraints.WEST, new Insets(0, 3, 5, 5), 0, 12);
@@ -150,25 +165,27 @@ public class ParticleGraph {
         panel.add(xscale, xscale.gridBagConstraints);
 
         textFields[2] = new CTextField("" + scaleX, font, new Insets(0, 0, 5, 0), GridBagConstraints.HORIZONTAL, new int[]{1, 12});
-        textFields[2].addKeyListener(new KAdapter(e -> textFields[2].setForeground(Color.black), ParticleGraph::isEnter));
+        textFields[2].addKeyListener(new KAdapter(e -> textFields[2].setForeground(Color.black), this::isEnter));
         panel.add(textFields[2], textFields[2].gridBagConstraints);
 
         graphButton = new RButton("<html><span style='color:#008DCB'>Graph</span></html>",
                 new Font(Font.SERIF, Font.PLAIN, 23), 2, GridBagConstraints.HORIZONTAL, new int[]{0, 13}, new int[]{20, 15});
         graphButton.addActionListener(e -> threadGraph(null));
         graphButton.gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
-        graphButton.gridBagConstraints.fill      = GridBagConstraints.HORIZONTAL;
-        graphButton.gridBagConstraints.anchor    = GridBagConstraints.SOUTHWEST;
-        graphButton.gridBagConstraints.weightx   = 0.5;
-        graphButton.gridBagConstraints.weighty   = 0.5;
+        graphButton.gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        graphButton.gridBagConstraints.anchor = GridBagConstraints.SOUTHWEST;
+        graphButton.gridBagConstraints.weightx = 0.5;
+        graphButton.gridBagConstraints.weighty = 0.5;
+
         panel.add(graphButton, graphButton.gridBagConstraints);
         frame.setVisible(true);
     }
-    private static void graph() {
+
+    private void graph() {
         if (ParticlesArray.size() > 0) ParticlesArray.clear();
 
         float inc = (float) pow(2, -3);
-        float positive_width = canvas.getWidth() / 2;
+        float positive_width = canvas.getWidth() / 2.0f;
         float negative_width = -positive_width;
 
         for (float i = negative_width; i < positive_width && isOkToGraph; i += inc) {
@@ -180,16 +197,7 @@ public class ParticleGraph {
         }
     }
 
-    public static void threadGraph(String express) {
-//        graphButton.setEnabled(false);
-//        try {
-//            graphFunction(express);
-//        }
-//        catch (Exception e){EException.append(e);}
-//        finally {
-//            graphButton.setEnabled(true);
-//        }
-
+    public void threadGraph(String express) {
         if (!isGraphing) {
             isGraphing = true;
             graphButton.setEnabled(false);
@@ -209,25 +217,24 @@ public class ParticleGraph {
         }
     }
 
-    private static void graphFunction(String express) {
+    private void graphFunction(String express) {
         evalInput(express);
         graph();
     }
 
-    private static void evalInput(String express) {
+    private void evalInput(String express) {
         scaleY = guardDouble(textFields[1].getText(), engine, textFields[1]);
         scaleX = guardDouble(textFields[2].getText(), engine, textFields[2]);
         mathExpression = express == null ? textFields[0].getText() : express;
     }
 
-    public static Float evaluateExpr(ScriptEngine engine, String express, boolean useIntendedForGraphing) {
+    public Float evaluateExpr(ScriptEngine engine, String express, boolean useIntendedForGraphing) {
         Float result = null;
         boolean isOk = true;
 
         try {
             result = ((Double) engine.eval(express)).floatValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (useIntendedForGraphing) {
                 isOk = false;
                 throwError(e);
@@ -239,11 +246,11 @@ public class ParticleGraph {
         return result;
     }
 
-    public static float guardDouble(String expr, Object engine, Object textfield){
+    public float guardDouble(String expr, Object engine, Object textfield) {
         Float result = 0f;
 
-        //Null pointer handling
-        if (engine instanceof ScriptEngine && engine != null) {
+        // Null pointer handling
+        if (engine instanceof ScriptEngine) {
             result = evaluateExpr((ScriptEngine) engine, expr, true);
 
             if (result == null) {
@@ -255,14 +262,19 @@ public class ParticleGraph {
         return result;
     }
 
-    private static void isEnter(KeyEvent k){
-        if(k.getKeyCode() == KeyEvent.VK_ENTER) threadGraph(null);
+    private void isEnter(KeyEvent k) {
+        if (k.getKeyCode() == KeyEvent.VK_ENTER) threadGraph(null);
     }
 
     private void addPopup(Component c, JPopupMenu p) {
         c.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {if (e.isPopupTrigger()) showMenu(e, p); }
-            public void mouseReleased(MouseEvent e) {if (e.isPopupTrigger()) showMenu(e, p); }
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) showMenu(e, p);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) showMenu(e, p);
+            }
         });
     }
 
@@ -282,26 +294,31 @@ public class ParticleGraph {
         p.show(e.getComponent(), e.getX(), e.getY());
     }
 
-    private static void throwError(Object...objects) {
+    private static void throwError(Object... objects) {
         if (objects != null && objects.length > 0) {
             for (Object o : objects) {
-                if (o != null)
-                {
+                if (o != null) {
                     if (o instanceof JTextField) ((JTextField) o).setForeground(Color.red);
                     else if (o instanceof Exception) EException.append(((Exception) o));
                     else EException.append(o.toString());
-                }
-                else EException.append(new NullPointerException("Object passed was null"));
+                } else EException.append(new NullPointerException("Object passed was null"));
             }
         }
     }
 
-    public void close(){particleGraph = null; frame.dispose();}
+    public void close() {
+        frame.dispose();
+        particleGraph = null;
+    }
 
     static class CCellRenderer implements ListCellRenderer {
         private final Font font;
         private final DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-        public CCellRenderer(Font font) {this.font = font; }
+
+        public CCellRenderer(Font font) {
+            this.font = font;
+        }
+
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             renderer.setFont(font);

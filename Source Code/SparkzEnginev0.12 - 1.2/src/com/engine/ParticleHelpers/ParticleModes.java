@@ -205,8 +205,8 @@ public class ParticleModes {
             if (LEFT_MOUSE_IS_DOWN.value()) {
                 if (ENGINE_MODE == GRAPH_MODE){
                     for (int i = 0; i < PARTICLE_DRAG_AMOUNT.value(); i++) {
-                        float mouseX = Vect2.map(Mouse.x, 0, canvas.getWidth(), -canvas.getWidth() / 2, canvas.getWidth() / 2);
-                        float mouseY = Vect2.map(Mouse.y, 0, canvas.getHeight(), -canvas.getHeight() / 2, canvas.getHeight() / 2);
+                        float mouseX = Vect2.map(Mouse.x, 0, canvas.getWidth(), -canvas.getWidth() / 2.0f, canvas.getWidth() / 2.0f);
+                        float mouseY = Vect2.map(Mouse.y, 0, canvas.getHeight(), -canvas.getHeight() / 2.0f, canvas.getHeight() / 2.0f);
                         singleParticle(mouseX, mouseY, PARTICLE_DRAG_SIZE_MAX.value(), PARTICLE_DRAG_SIZE_MIN.value(), PARTICLE_DRAG_SPEED.value());
                     }
                 }
@@ -229,7 +229,7 @@ public class ParticleModes {
      */
     public static void fireworksTarget(MouseEvent e) {
         int w = canvas.getWidth(), h = canvas.getHeight();
-        ParticlesArray.add(new Particle((w / 2), (h - 1),
+        ParticlesArray.add(new Particle((w / 2.0f), (h - 1),
                 (random.nextFloat() * SINGLE_CLICK_SIZE_MAX.value()) + SINGLE_CLICK_SIZE_MIN.value(),
                 (random.nextFloat() * SINGLE_CLICK_SPEED.value()) + 3, (w / 2), (h - 1), e.getX(), e.getY()));
     }

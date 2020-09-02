@@ -22,11 +22,11 @@ public class InputGuard {
         JLabel label = new JLabel(promptText);
         label.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
-        String amount = JOptionPane.showInputDialog(OptionsMenu.frame, label, null, JOptionPane.PLAIN_MESSAGE);
+        String amount = JOptionPane.showInputDialog(OptionsMenu.getInstance().frame, label, null, JOptionPane.PLAIN_MESSAGE);
         float newAmount = (amount != null && amount.length() > 0 && canParseStringFloat(amount)) ? Float.parseFloat(amount) : default_val;
         if (newAmount < min) {
             while (newAmount < min) {
-                amount = JOptionPane.showInputDialog(OptionsMenu.frame, H(3, "Not Allowed, Enter an Amount > " + min));
+                amount = JOptionPane.showInputDialog(OptionsMenu.getInstance().frame, H(3, "Not Allowed, Enter an Amount > " + min));
                 newAmount = (amount != null && amount.length() > 0) ? Float.parseFloat(amount) : default_val;
             }
         }

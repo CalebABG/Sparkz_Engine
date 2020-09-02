@@ -90,7 +90,7 @@ public class VCreations {
     public static void createIKChain(MouseEvent e, int NUM_POINTS, float size, float rad,
                                      float stiffness, float tear, boolean drawlinks, boolean tearable, Color lc, Color pc){
         int index = 0, startX = (int) (e.getX() - rad / 2), mY = e.getY();
-        float spacing = (1 / NUM_POINTS) + size;
+        float spacing = (1.0f / NUM_POINTS) + size;
         for (int i = 0; i < NUM_POINTS; i++) {
             if (i == 0) {
                 //First Point

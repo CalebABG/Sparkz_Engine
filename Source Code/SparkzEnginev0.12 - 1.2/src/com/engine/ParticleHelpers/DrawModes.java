@@ -103,7 +103,6 @@ public class DrawModes {
         graphics2D.setColor(c);
 
         switch (particleMode) {
-            case RECTANGLE_NOFILL:      drawRect(x, y, radius, radius);         break;
             case CIRCLE_NOFILL:         drawCircle(x, y, radius, radius);       break;
             case RECTANGLE3D_NOFILL:    draw3DRect(x, y, radius, radius);       break;
             case NUMBERS:               drawNumbers(x, y, radius);              break;

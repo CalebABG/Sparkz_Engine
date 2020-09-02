@@ -11,20 +11,27 @@ import java.awt.*;
 
 public class SavedColorsLoader {
     private static SavedColorsLoader savedColorsLoaderUI = null;
-    public static JFrame frame;
-    private static int lastIndex = 0;
-    private static JSlider colorSlider;
-    private static CLabel[] labels = new CLabel[5];
+
+    public JFrame frame;
+    private int lastIndex = 0;
+    private JSlider colorSlider;
+    private CLabel[] labels = new CLabel[5];
 
     //public static void main(String[] args) {getInstance();}
 
-    public static void getInstance() {
+    public static SavedColorsLoader getInstance() {
         if (savedColorsLoaderUI == null) savedColorsLoaderUI = new SavedColorsLoader();
-        frame.toFront();
+
+        return savedColorsLoaderUI;
     }
 
     private SavedColorsLoader() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame();
         frame.setIconImage(Settings.iconImage);
         frame.setSize(523, 155);
@@ -32,7 +39,7 @@ public class SavedColorsLoader {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowClosing(windowEvent -> close()));
         frame.getContentPane().setLayout(null);
-        frame.setLocationRelativeTo(ColorEditor.frame);
+        frame.setLocationRelativeTo(ColorEditor.getInstance().frame);
 
         Settings.loadColors();
         SCChoices.setPresetColors(Settings.convertColors(lastIndex, Settings.userSavedColors));
@@ -81,7 +88,7 @@ public class SavedColorsLoader {
         frame.setTitle("You have " + Settings.userSavedColors.size() + " Saved Colors :D");
     }
 
-    private static void setLabelColors(Color[] colors) {
+    private void setLabelColors(Color[] colors) {
         labels[0].setBackground(colors[0]);
         labels[1].setBackground(colors[1]);
         labels[2].setBackground(colors[2]);
@@ -90,11 +97,13 @@ public class SavedColorsLoader {
     }
 
     private int setMinorTicks() {
-        if (Settings.userSavedColors.size() < 25) return 1;
-        else if (Settings.userSavedColors.size() % 15 == 0) {
+        if (Settings.userSavedColors.size() < 25) {
+            return 1;
+        } else if (Settings.userSavedColors.size() % 15 == 0) {
             return Settings.userSavedColors.size() / 15;
+        } else {
+            return Settings.userSavedColors.size() / 25;
         }
-        else return Settings.userSavedColors.size() / 25;
     }
 
     private int setMajorTicks() {
@@ -107,7 +116,7 @@ public class SavedColorsLoader {
     }
 
     private void close() {
-        savedColorsLoaderUI = null;
         frame.dispose();
+        savedColorsLoaderUI = null;
     }
 }

@@ -55,15 +55,15 @@ public abstract class EConstants {
 
     /*Particle ArrayLists*/
     public static final List<Particle> ParticlesArray               = new ArrayList<>(150_000);
-    public static final List<Fireworks> FireworksArray              = new ArrayList<>(55_000);
-    public static final List<GravityPoint> GravityPointsArray       = new ArrayList<>(150);
-    public static final List<Emitter> EmitterArray                  = new ArrayList<>(100);
-    public static final List<Flux> FluxArray                        = new ArrayList<>(100);
-    public static final List<Eraser> EraserArray                    = new ArrayList<>(150);
-    public static final List<QED> QEDArray                          = new ArrayList<>(150);
-    public static final List<Ion> IonArray                          = new ArrayList<>(150);
-    public static final List<BlackHole> BlackHoleArray              = new ArrayList<>(100);
-    public static final List<Duplex> DuplexArray                    = new ArrayList<>(100);
+    public static final List<Fireworks> FireworksArray              = new ArrayList<>(150_000);
+    public static final List<GravityPoint> GravityPointsArray       = new ArrayList<>(350);
+    public static final List<Emitter> EmitterArray                  = new ArrayList<>(350);
+    public static final List<Flux> FluxArray                        = new ArrayList<>(350);
+    public static final List<Eraser> EraserArray                    = new ArrayList<>(350);
+    public static final List<QED> QEDArray                          = new ArrayList<>(350);
+    public static final List<Ion> IonArray                          = new ArrayList<>(350);
+    public static final List<BlackHole> BlackHoleArray              = new ArrayList<>(350);
+    public static final List<Duplex> DuplexArray                    = new ArrayList<>(350);
     public static final List<Portal> PortalArray                    = new ArrayList<>(2);
 
     /*Frame and Graphics*/

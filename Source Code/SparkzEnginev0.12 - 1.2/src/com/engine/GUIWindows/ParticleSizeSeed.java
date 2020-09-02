@@ -5,6 +5,7 @@ import com.engine.JComponents.CTextField;
 import com.engine.JComponents.RButton;
 import com.engine.JComponents.RLabel;
 import com.engine.Utilities.Settings;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,25 +14,35 @@ import static com.engine.Utilities.InputGuard.stringNotNull;
 
 public class ParticleSizeSeed {
     private static ParticleSizeSeed particleSizeSeed = null;
-    public static JFrame frame;
-    public static CTextField minTextField, maxTextField;
+
+    public JFrame frame;
+    public CTextField minTextField, maxTextField;
 
     //public static void main(String[] args) {getInstance(0);}
 
-    public static void getInstance(int type) {
-        if (particleSizeSeed == null) particleSizeSeed = new ParticleSizeSeed(type);
-        frame.toFront();
+    public static ParticleSizeSeed getInstance(int type) {
+        if (particleSizeSeed == null)
+            particleSizeSeed = new ParticleSizeSeed(type);
+
+        particleSizeSeed.frame.toFront();
+
+        return particleSizeSeed;
     }
 
     // Type == 0 : singleClickSize; Type == 1 : fireworksSize; Type == 2 : dragSize
     private ParticleSizeSeed(int type) {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame(setTitle(type));
         frame.setIconImage(Settings.iconImage);
         frame.setSize(402, 215);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowClosing(e -> close()));
-        frame.setLocationRelativeTo(OptionsMenu.frame);
+        frame.setLocationRelativeTo(OptionsMenu.getInstance().frame);
 
         JScrollPane scrollPane = new JScrollPane();
         frame.add(scrollPane, BorderLayout.CENTER);
@@ -83,17 +94,22 @@ public class ParticleSizeSeed {
             if (type == 0) {
                 SINGLE_CLICK_SIZE_MIN.setValue(stringNotNull(minTextField.getText()) ? Float.parseFloat(minTextField.getText()) : SINGLE_CLICK_SIZE_MIN.value());
                 SINGLE_CLICK_SIZE_MAX.setValue(stringNotNull(maxTextField.getText()) ? Float.parseFloat(maxTextField.getText()) : SINGLE_CLICK_SIZE_MAX.value());
-            }
-            else if (type == 1) {
+            } else if (type == 1) {
                 FIREWORKS_SIZE_MIN.setValue(stringNotNull(minTextField.getText()) ? Float.parseFloat(minTextField.getText()) : FIREWORKS_SIZE_MIN.value());
                 FIREWORKS_SIZE_MAX.setValue(stringNotNull(maxTextField.getText()) ? Float.parseFloat(maxTextField.getText()) : FIREWORKS_SIZE_MAX.value());
-            }
-            else if (type == 2) {
+            } else if (type == 2) {
                 PARTICLE_DRAG_SIZE_MIN.setValue(stringNotNull(minTextField.getText()) ? Float.parseFloat(minTextField.getText()) : PARTICLE_DRAG_SIZE_MIN.value());
                 PARTICLE_DRAG_SIZE_MAX.setValue(stringNotNull(maxTextField.getText()) ? Float.parseFloat(maxTextField.getText()) : PARTICLE_DRAG_SIZE_MAX.value());
             }
-        } catch (Exception e){EException.append(e);}  finally {close();}
+        } catch (Exception e) {
+            EException.append(e);
+        } finally {
+            close();
+        }
     }
 
-    private void close(){particleSizeSeed = null; frame.dispose();}
+    private void close() {
+        frame.dispose();
+        particleSizeSeed = null;
+    }
 }

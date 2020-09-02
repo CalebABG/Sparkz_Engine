@@ -1,5 +1,6 @@
 package com.engine.GUIWindows;
 
+import com.engine.EngineHelpers.EConstants;
 import com.engine.EngineHelpers.EngineMethods;
 import com.engine.J8Helpers.Extensions.WindowClosing;
 import com.engine.JComponents.CLabel;
@@ -9,41 +10,44 @@ import com.engine.Verlet.Edge;
 import com.engine.Verlet.VModes;
 import com.engine.Verlet.VSim;
 import com.engine.Verlet.Vertex;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+
 import static com.engine.EngineHelpers.EBOOLS.ENGINE_ENABLE_SMOOTH_RENDER;
 import static com.engine.Verlet.VSim.selectedVertex;
 
 public class VPhysicsEditor {
-    public static VPhysicsEditor vPhysicsEditorInstance = null;
-    public static JFrame frame;
-
-    public static VModes.EditorModes EDITOR_MODE = VModes.EditorModes.Add;
-    public static VModes.CreationModes CREATION_MODE = VModes.CreationModes.Point;
+    private static VPhysicsEditor vPhysicsEditorInstance = null;
 
     private static Font font = new Font(Font.SERIF, Font.PLAIN, 14);
-    public static JButton btnSetSimulationProperties, objectsetproperties_button, setconstraintsbutton;
-    public static CLabel pointcolor_panel, linkcolor_panel, selectioncolor_panel, constraint_link_panel;
 
-    public static DefaultListModel<Integer> listModel = new DefaultListModel<>();
-    public static JCheckBox showselectionconstraint_checkbox = new JCheckBox("Show Constraint"),
-                            constraintdrawlink_checkbox = new JCheckBox("Draw Link"),
-                            constrainttearable_checkbox = new JCheckBox("Tearable"),
-                            selectionshowpoint_checkbox = new JCheckBox("Show Point"),
-                            selectioncollidable_checkbox = new JCheckBox("Collidable");
+    public JFrame frame;
+    public VModes.EditorModes EDITOR_MODE = VModes.EditorModes.Add;
+    public VModes.CreationModes CREATION_MODE = VModes.CreationModes.Point;
 
-    static {listModel.addElement(-1);}
+    public JButton btnSetSimulationProperties, objectsetproperties_button, setconstraintsbutton;
+    public CLabel pointcolor_panel, linkcolor_panel, selectioncolor_panel, constraint_link_panel;
 
-    public static JList<Integer> constraintJlist = new JList<>(listModel);
-    public static JComboBox<VModes.EditorModes> editorModesJComboBox = new JComboBox<>();
-    public static JComboBox<VModes.CreationModes> creationModesJComboBox = new JComboBox<>();
-    public static JTextField simacc_field = new JTextField(10),
+
+    public JCheckBox showselectionconstraint_checkbox = new JCheckBox("Show Constraint"),
+            constraintdrawlink_checkbox = new JCheckBox("Draw Link"),
+            constrainttearable_checkbox = new JCheckBox("Tearable"),
+            selectionshowpoint_checkbox = new JCheckBox("Show Point"),
+            selectioncollidable_checkbox = new JCheckBox("Collidable");
+
+    public JList<Integer> constraintJlist;
+    public DefaultListModel<Integer> listModel = new DefaultListModel<>();
+
+    public JComboBox<VModes.EditorModes> editorModesJComboBox = new JComboBox<>();
+    public JComboBox<VModes.CreationModes> creationModesJComboBox = new JComboBox<>();
+    public JTextField simacc_field = new JTextField(10),
             dragforce_field = new JTextField(10),
             gravity_field = new JTextField(10),
-            numpoints_field = new JTextField("4",10),
+            numpoints_field = new JTextField("4", 10),
             objectsize_field = new JTextField(10),
             dampening_field = new JTextField(10),
             objectmass_field = new JTextField(10),
@@ -61,19 +65,33 @@ public class VPhysicsEditor {
 
     //public static void main(String[] args) {getInstance(null);}
 
-    public static void getInstance(JFrame p) {
+
+    public static VPhysicsEditor getInstance() {
+        return getInstance(EConstants.EFrame);
+    }
+
+    public static VPhysicsEditor getInstance(JFrame p) {
         if (vPhysicsEditorInstance == null) vPhysicsEditorInstance = new VPhysicsEditor(p);
-        frame.toFront();
+
+        return vPhysicsEditorInstance;
     }
 
     public VPhysicsEditor(JFrame parent) {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Verlet Physics Editor");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(568, 610);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowClosing(windowEvent -> close()));
         frame.setLocationRelativeTo(parent);
+
+        listModel.addElement(-1);
+        constraintJlist = new JList<>(listModel);
 
         JScrollPane simeditor_scrollpane = new JScrollPane();
         frame.getContentPane().add(simeditor_scrollpane, BorderLayout.CENTER);
@@ -659,7 +677,7 @@ public class VPhysicsEditor {
         selection_panel.add(objectsetproperties_button, gbc_objectsetproperties_button);
 
         JLabel lblConstraintProperties = new JLabel("<html><h3>Selection Constraint Properties <br> <span style='color: green'>Green = Selected Point</span>" +
-                                                                                                    " <br> <span style='color: red'>Red = Selected Constraint</span></h3></html>");
+                " <br> <span style='color: red'>Red = Selected Constraint</span></h3></html>");
         lblConstraintProperties.setFont(font);
         GridBagConstraints gbc_lblConstraintProperties = new GridBagConstraints();
         gbc_lblConstraintProperties.insets = new Insets(0, 0, 5, 0);
@@ -855,13 +873,13 @@ public class VPhysicsEditor {
 
             List<Integer> selectedValues = constraintJlist.getSelectedValuesList();
 
-            if (!selectedValues.isEmpty()){
+            if (!selectedValues.isEmpty()) {
                 for (int i = 0; i < selectedValues.size(); i++) {
                     Edge c = selectedVertex.edges.get(selectedValues.get(i));
 
                     c.drawThis = constraintdrawlink_checkbox.isSelected();
                     c.tearable = constrainttearable_checkbox.isSelected();
-                    c.color    = constraint_link_panel.getBackground();
+                    c.color = constraint_link_panel.getBackground();
                     c.stiffness = InputGuard.floatTextfieldGuardDefault(0.0f, c.stiffness, cStiffness);
                     c.tearSensitivity = InputGuard.floatTextfieldGuardDefault(0.0f, c.tearSensitivity, cTeardist);
                 }
@@ -869,7 +887,7 @@ public class VPhysicsEditor {
         }
     }
 
-    public static void unsetObjectPropertiesOnDeselect(){
+    public void unsetObjectPropertiesOnDeselect() {
         if (vPhysicsEditorInstance != null) {
             selectiondampening_field.setText("");
             selectionmass_field.setText("");
@@ -878,7 +896,7 @@ public class VPhysicsEditor {
         }
     }
 
-    public static void setObjectPropertiesOnSelect(Vertex v){
+    public void setObjectPropertiesOnSelect(Vertex v) {
         if (vPhysicsEditorInstance != null) {
             selectioncolor_panel.setBackground(v.color);
             selectioncollidable_checkbox.setSelected(v.collidable);
@@ -906,11 +924,11 @@ public class VPhysicsEditor {
     }
 
     private void close() {
-        vPhysicsEditorInstance = null;
         frame.dispose();
+        vPhysicsEditorInstance = null;
     }
 
-    public static void updateJListConstraints(List<Edge> edgeList) {
+    public void updateJListConstraints(List<Edge> edgeList) {
         if (vPhysicsEditorInstance != null) {
             listModel.clear();
             if (edgeList == null || edgeList.isEmpty()) listModel.addElement(-1);

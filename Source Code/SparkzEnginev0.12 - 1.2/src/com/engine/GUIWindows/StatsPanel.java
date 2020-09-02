@@ -6,6 +6,7 @@ import com.engine.J8Helpers.Extensions.WindowClosing;
 import com.engine.JComponents.CLabel;
 import com.engine.Utilities.Settings;
 import com.engine.Verlet.Vertex;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -15,26 +16,38 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import static com.engine.EngineHelpers.EConstants.*;
 import static com.engine.EngineHelpers.EINTS.*;
 
 public class StatsPanel {
     private static StatsPanel statsUI = null;
-    private static JFrame frame;
-    private static Timer timer;
-    public static int framesPerSec = 0;
-    public JPanel panel;
-    public Color bgColor = new Color(20, 23, 25).brighter();
+
     public Font font = new Font(Font.SERIF, Font.PLAIN, 25);
-    private static CLabel particleAmount, dragamount, ptMode, smartPt, connect, atm, ptFriction, fpsLabel, screenSize;
-    private static DecimalFormat decimalFormat = new DecimalFormat("#,###");
+    public static int framesPerSec = 0;
+
+    private JFrame frame;
+    private Timer timer;
+    public Color bgColor = new Color(20, 23, 25).brighter();
+    public JPanel panel;
+    private CLabel particleAmount, dragamount, ptMode, smartPt, connect, atm, ptFriction, fpsLabel, screenSize;
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
     //public static void main(String[] args) {getInstance();}
 
-    public static void getInstance() {if (statsUI == null) statsUI = new StatsPanel(); frame.toFront();}
+    public static StatsPanel getInstance() {
+        if (statsUI == null) statsUI = new StatsPanel();
+
+        return statsUI;
+    }
 
     private StatsPanel() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Stats Panel");
         frame.setSize(730, 450);
         frame.setIconImage(Settings.iconImage);
@@ -42,7 +55,7 @@ public class StatsPanel {
         frame.addWindowListener(new WindowClosing(windowEvent -> close()));
         frame.setLocationRelativeTo(EFrame);
 
-        JMenuBar menuBar = new JMenuBar(){
+        JMenuBar menuBar = new JMenuBar() {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
@@ -72,7 +85,9 @@ public class StatsPanel {
         split_pane.setUI(new BasicSplitPaneUI() {
             public BasicSplitPaneDivider createDefaultDivider() {
                 return new BasicSplitPaneDivider(this) {
-                    public void setBorder(Border border) {}
+                    public void setBorder(Border border) {
+                    }
+
                     public void paint(Graphics g) {
                         super.paint(g);
                         g.setColor(Color.black);
@@ -88,12 +103,11 @@ public class StatsPanel {
         ActionListener actl = e -> {
             int loc = 0;
             JMenuItem source = (JMenuItem) e.getSource();
-            if(split_pane.getLeftComponent().isVisible() && split_pane.getRightComponent().isVisible()){
+            if (split_pane.getLeftComponent().isVisible() && split_pane.getRightComponent().isVisible()) {
                 split_pane.setDividerSize(0);
                 split_pane.getLeftComponent().setVisible(source == mntmShowhideLeft);
                 split_pane.getRightComponent().setVisible(source == mntmShowhideRight);
-            }
-            else{
+            } else {
                 split_pane.getLeftComponent().setVisible(true);
                 split_pane.getRightComponent().setVisible(true);
                 split_pane.setDividerLocation(loc);
@@ -218,7 +232,7 @@ public class StatsPanel {
         gbl_instructions_panel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
         gbl_instructions_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         instructions_panel.setLayout(gbl_instructions_panel);
-        
+
         CLabel shortCts = new CLabel("Press: (On Sparkz Engine)", new Font(Font.SERIF, Font.PLAIN, 26), Color.white, bgColor);
         GridBagConstraints gbc_label_8 = new GridBagConstraints();
         gbc_label_8.weighty = 1.0;
@@ -302,31 +316,47 @@ public class StatsPanel {
 
     private void startTimer() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {public void run() {update();}}, 0, 16); // 16ms = 60 updates per second
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                update();
+            }
+        }, 0, 16); // 16ms = 60 updates per second
     }
 
-    private void stopTimer() {timer.cancel(); timer.purge();}
+    private void stopTimer() {
+        timer.cancel();
+        timer.purge();
+    }
 
     public void update() {
         try {
             if (fpsLabel != null) fpsLabel.setText("Frames Per Second: " + framesPerSec);
             if (particleAmount != null) {
-                if (ENGINE_MODE == EModes.ENGINE_MODES.RAGDOLL_MODE) particleAmount.setText("Points: " + decimalFormat.format(Vertex.Vertices.size()));
+                if (ENGINE_MODE == EModes.ENGINE_MODES.RAGDOLL_MODE)
+                    particleAmount.setText("Points: " + decimalFormat.format(Vertex.Vertices.size()));
                 else particleAmount.setText("Particles: " + decimalFormat.format(
                         ParticlesArray.size() + GravityPointsArray.size() + FireworksArray.size() +
                                 EmitterArray.size() + QEDArray.size() + IonArray.size() +
                                 FluxArray.size() + EraserArray.size() + BlackHoleArray.size() +
                                 DuplexArray.size() + PortalArray.size()));
             }
-            if (dragamount != null) dragamount.setText("Drag Amount: " + decimalFormat.format(PARTICLE_DRAG_AMOUNT.value()));
+            if (dragamount != null)
+                dragamount.setText("Drag Amount: " + decimalFormat.format(PARTICLE_DRAG_AMOUNT.value()));
             if (ptMode != null) ptMode.setText(EngineMethods.getModeText());
             if (smartPt != null) smartPt.setText(EngineMethods.getThinkingText());
             if (connect != null) connect.setText("Link Mode: " + EngineMethods.getConnectText());
             if (atm != null) atm.setText(EngineMethods.getMouseAttraction());
             if (ptFriction != null) ptFriction.setText(EngineMethods.getFrictionText());
-            if (screenSize != null) screenSize.setText(String.format("Canvas Size: %d x %d", canvas.getWidth(), canvas.getHeight()));
-        } catch (Exception ex) {EException.append(ex);}
+            if (screenSize != null)
+                screenSize.setText(String.format("Canvas Size: %d x %d", canvas.getWidth(), canvas.getHeight()));
+        } catch (Exception ex) {
+            EException.append(ex);
+        }
     }
 
-    private void close() {statsUI = null; stopTimer(); frame.dispose();}
+    private void close() {
+        stopTimer();
+        frame.dispose();
+        statsUI = null;
+    }
 }

@@ -40,7 +40,7 @@ public class EngineSplash extends JWindow {
         dispose();
     }
 
-    class SplashPanel extends JPanel {
+    static class SplashPanel extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             if (Settings.splashImage != null)

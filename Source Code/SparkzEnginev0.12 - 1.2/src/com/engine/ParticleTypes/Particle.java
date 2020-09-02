@@ -50,8 +50,8 @@ public class Particle extends Molecule implements ThinkingColors {
         if (PARTICLE_GRAVITATION_MODE == ORGANIC && ParticlesArray.size() <= 850) {
             ParticleGraph.engine.put("x", angle);
 
-            Float tvx = ParticleGraph.evaluateExpr(ParticleGraph.engine, expressionForceX,false);
-            Float tvy = ParticleGraph.evaluateExpr(ParticleGraph.engine, expressionForceY,false);
+            Float tvx = ParticleGraph.getInstance().evaluateExpr(ParticleGraph.engine, expressionForceX,false);
+            Float tvy = ParticleGraph.getInstance().evaluateExpr(ParticleGraph.engine, expressionForceY,false);
 
             vx = tvx == null ? vx : tvx;
             vy = tvy == null ? vy : tvy;
@@ -103,10 +103,6 @@ public class Particle extends Molecule implements ThinkingColors {
             float forceY = dy / 5 / dist;
 
             switch (PARTICLE_GRAVITATION_MODE) {
-                case DEFAULT:
-                    ax += forceX;
-                    ay += forceY;
-                    break;
 
                 case COSINE_SINE:
                     ax += cos(forceX);
@@ -143,6 +139,7 @@ public class Particle extends Molecule implements ThinkingColors {
                     ay += -forceY * scale;
                     break;
 
+                case DEFAULT:
                 default:
                     ax += forceX;
                     ay += forceY;
@@ -203,8 +200,8 @@ public class Particle extends Molecule implements ThinkingColors {
                 int cw = canvas.getWidth();
                 int ch = canvas.getHeight();
 
-                int mx = (int) map(Mouse.x, 0, cw, -cw / 2, cw / 2);
-                int my = (int) map(Mouse.y, 0, ch, -ch / 2, ch / 2);
+                int mx = (int) map(Mouse.x, 0, cw, -cw / 2.0f, cw / 2.0f);
+                int my = (int) map(Mouse.y, 0, ch, -ch / 2.0f, ch / 2.0f);
 
                 gravitateTo(mx, my);
             }

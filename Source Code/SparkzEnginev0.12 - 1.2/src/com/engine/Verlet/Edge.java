@@ -13,7 +13,7 @@ public class Edge {
     public float tearSensitivity;
     public Color color = Color.white;
     public Vertex p1, p2;
-    public boolean drawThis = true;
+    public boolean drawThis;
     public boolean tearable = true;
 
     Edge(Vertex link1, Vertex link2, float restingDist, float stiff, float tearSensitivity, boolean drawMe) {
@@ -48,7 +48,7 @@ public class Edge {
             p1.removeLink(this);
 
             if (p1 == selectedVertex || p2 == selectedVertex)
-                VPhysicsEditor.updateJListConstraints(selectedVertex.edges);
+                VPhysicsEditor.getInstance().updateJListConstraints(selectedVertex.edges);
         }
         //if (tearable) if (d > tearSensitivity) p2.removeLink(this);
 

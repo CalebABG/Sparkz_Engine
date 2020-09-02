@@ -341,14 +341,15 @@ public class EngineMethods {
             case 8: PARTICLE_GRAVITATION_MODE = FLOW_FIELD; break;
             default: break;
         }
-        updateGravitationModesRadios();
+
+        menuBar.updateGravitationModesRadios();
     }
 
     /**
      * Dialog window for adjusting the fireworks options (Wind, Life, Jitter)
      */
     private static void realFireworks() {
-        String input = JOptionPane.showInputDialog(OptionsMenu.frame, H(3, GUIText.FireworksOptions), null, JOptionPane.PLAIN_MESSAGE);
+        String input = JOptionPane.showInputDialog(OptionsMenu.getInstance().frame, H(3, GUIText.FireworksOptions), null, JOptionPane.PLAIN_MESSAGE);
         int rfoInt = (InputGuard.canParseStringInt(input)) ? Integer.parseInt(input) : -1;
         switch (rfoInt) {
             case 1: windAmount();     break;
@@ -363,7 +364,7 @@ public class EngineMethods {
      * while upon drag creation.
      */
     private static void particleSizeSeedOptions() {
-        String input = JOptionPane.showInputDialog(OptionsMenu.frame, GUIText.ParticleSizeSeedOptions, null, JOptionPane.PLAIN_MESSAGE);
+        String input = JOptionPane.showInputDialog(OptionsMenu.getInstance().frame, GUIText.ParticleSizeSeedOptions, null, JOptionPane.PLAIN_MESSAGE);
         int seedOpt = (InputGuard.canParseStringInt(input)) ? Integer.parseInt(input) : -1;
 
         switch (seedOpt) {
@@ -379,7 +380,7 @@ public class EngineMethods {
      * while upon drag creation.
      */
     private static void particleSpeedSeedOptions() {
-        String input = JOptionPane.showInputDialog(OptionsMenu.frame, GUIText.ParticleSpeedSeedOptions, null, JOptionPane.PLAIN_MESSAGE);
+        String input = JOptionPane.showInputDialog(OptionsMenu.getInstance().frame, GUIText.ParticleSpeedSeedOptions, null, JOptionPane.PLAIN_MESSAGE);
         int seedOpt = (InputGuard.canParseStringInt(input)) ? Integer.parseInt(input) : -1;
         switch (seedOpt) {
             case 1: ParticleSpeedSeed.getInstance(0); break;
@@ -395,8 +396,8 @@ public class EngineMethods {
      * @see SlideEditor
      */
     public static void setMaxParticleSizeSlider() {
-        SlideEditor.ptsslider.setMaximum((int) minValueGuard(1, SlideEditor.ptsslider.getMaximum(),
-                H(3, "Enter Max Particle Size (Integer Only)"), SlideEditor.frame));
+        SlideEditor.getInstance().ptsslider.setMaximum((int) minValueGuard(1, SlideEditor.getInstance().ptsslider.getMaximum(),
+                H(3, "Enter Max Particle Size (Integer Only)"), SlideEditor.getInstance().frame));
     }
 
     /**
@@ -405,8 +406,8 @@ public class EngineMethods {
      * @see SlideEditor
      */
     public static void setMaxDragSlider() {
-        SlideEditor.ptdrslider.setMaximum((int) minValueGuard(1, SlideEditor.ptdrslider.getMaximum(),
-                H(3, "Enter Max Drag Amount (Integer Only)"), SlideEditor.frame));
+        SlideEditor.getInstance().ptdrslider.setMaximum((int) minValueGuard(1, SlideEditor.getInstance().ptdrslider.getMaximum(),
+                H(3, "Enter Max Drag Amount (Integer Only)"), SlideEditor.getInstance().frame));
     }
 
     /**
@@ -415,15 +416,15 @@ public class EngineMethods {
      * @see SlideEditor
      */
     public static void setMaxFireworksSlider() {
-        SlideEditor.ptfrslider.setMaximum((int) minValueGuard(1, SlideEditor.ptfrslider.getMaximum(),
-                H(3, "Enter Max Fireworks Amount (Integer Only)"), SlideEditor.frame));
+        SlideEditor.getInstance().ptfrslider.setMaximum((int) minValueGuard(1, SlideEditor.getInstance().ptfrslider.getMaximum(),
+                H(3, "Enter Max Fireworks Amount (Integer Only)"), SlideEditor.getInstance().frame));
     }
 
     /**
      * Dialog window to set the radius of all particles in the ParticlesArray.
      */
     private static void particleSize() {
-        float r = minValueGuard(0, .95f, H(3, "Change Particle Size To (Integer or Float)"), OptionsMenu.frame);
+        float r = minValueGuard(0, .95f, H(3, "Change Particle Size To (Integer or Float)"), OptionsMenu.getInstance().frame);
         if (ParticlesArray.size() > 0) {
             for (int i = 0; i < ParticlesArray.size(); i++) ParticlesArray.get(i).radius = r;
         }
@@ -436,6 +437,7 @@ public class EngineMethods {
     private static void cycleTimeOptions() {
         ENGINE_COLOR_CYCLE_RATE.setValue((int) minValueGuard(1, ENGINE_COLOR_CYCLE_RATE.value(),
                 H(3, "Enter Cycle Time (In Seconds)")));
+
         if (ENGINE_CYCLE_COLORS.value()) {
             SCCycle.stopCycle();
             SCCycle.startCycle();
@@ -444,22 +446,22 @@ public class EngineMethods {
 
     public static void windAmount() {
         FIREWORKS_WIND.setValue((int) minValueGuard(0, FIREWORKS_WIND.value(),
-                H(3, "Enter Wind Amount (Integer Only)"), SlideEditor.frame));
+                H(3, "Enter Wind Amount (Integer Only)"), SlideEditor.getInstance().frame));
     }
 
     public static void baseLifeAmount() {
         PARTICLE_BASE_LIFE.setValue((int) minValueGuard(0, PARTICLE_BASE_LIFE.value(),
-                H(3, "Enter Base Life Amount (Integer Only)"), SlideEditor.frame));
+                H(3, "Enter Base Life Amount (Integer Only)"), SlideEditor.getInstance().frame));
     }
 
     public static void rfLifeAmount() {
         FIREWORKS_LIFE.setValue((int) minValueGuard(0, FIREWORKS_LIFE.value(),
-                H(3, "Enter Real Fireworks Life Amount (Integer Only)"), SlideEditor.frame));
+                H(3, "Enter Real Fireworks Life Amount (Integer Only)"), SlideEditor.getInstance().frame));
     }
 
     public static void jitterAmount() {
         FIREWORKS_JITTER.setValue((int) minValueGuard(0, FIREWORKS_JITTER.value(),
-                H(3, "Enter Jitter Amount (Integer Only)"), SlideEditor.frame));
+                H(3, "Enter Jitter Amount (Integer Only)"), SlideEditor.getInstance().frame));
     }
 
     private static void particleDrag() {
@@ -484,8 +486,12 @@ public class EngineMethods {
      * @see System
      */
     public static void setEngineTitleState() {
-        if (ENGINE_IS_PAUSED.value()) EFrame.setTitle(title + " - PAUSED");
-        else EFrame.setTitle(title);
+        if (ENGINE_IS_PAUSED.value()) {
+            EFrame.setTitle(title + " - PAUSED");
+        }
+        else {
+            EFrame.setTitle(title);
+        }
     }
 
 
@@ -510,7 +516,7 @@ public class EngineMethods {
      */
     public static void pauseSimulation() {
         ENGINE_IS_PAUSED.toggleValue();
-        CMenuBar.updateState();
+        menuBar.updateState();
         setEngineTitleState();
     }
 
@@ -545,14 +551,14 @@ public class EngineMethods {
             // Increment Mode
             ENGINE_MODE = EModes.getMode(ENGINE_MODE, 1);
             displayEngineMode();
-            updateParticleModesRadios();
+            menuBar.updateParticleModesRadios();
         }
     }
 
     public static void changeVPhysicsEditorMode(VModes.EditorModes editorMode){
         if (ENGINE_MODE == RAGDOLL_MODE && !Notifier.drawingNotification){
-            VPhysicsEditor.EDITOR_MODE = editorMode;
-            VPhysicsEditor.editorModesJComboBox.setSelectedItem(editorMode);
+            VPhysicsEditor.getInstance().EDITOR_MODE = editorMode;
+            VPhysicsEditor.getInstance().editorModesJComboBox.setSelectedItem(editorMode);
             Notifier.pushNotification(editorMode.name());
         }
     }
@@ -565,8 +571,8 @@ public class EngineMethods {
     public static void leftArrowFunction() {
         if (ENGINE_MODE == RAGDOLL_MODE) {
             if (!Notifier.drawingNotification) {
-                VPhysicsEditor.CREATION_MODE = VModes.getMode(VPhysicsEditor.CREATION_MODE, -1);
-                VPhysicsEditor.creationModesJComboBox.setSelectedItem(VPhysicsEditor.CREATION_MODE);
+                VPhysicsEditor.getInstance().CREATION_MODE = VModes.getMode(VPhysicsEditor.getInstance().CREATION_MODE, -1);
+                VPhysicsEditor.getInstance().creationModesJComboBox.setSelectedItem(VPhysicsEditor.getInstance().CREATION_MODE);
                 displayParticleType();
             }
         }
@@ -575,7 +581,7 @@ public class EngineMethods {
                 // Decrement
                 PARTICLE_TYPE = EModes.getMode(PARTICLE_TYPE, -1);
                 displayParticleType();
-                updateParticleTypesRadios();
+                menuBar.updateParticleTypesRadios();
             }
         }
     }
@@ -588,8 +594,8 @@ public class EngineMethods {
     public static void rightArrowFunction() {
         if (ENGINE_MODE == RAGDOLL_MODE) {
             if (!Notifier.drawingNotification) {
-                VPhysicsEditor.CREATION_MODE = VModes.getMode(VPhysicsEditor.CREATION_MODE, 1);
-                VPhysicsEditor.creationModesJComboBox.setSelectedItem(VPhysicsEditor.CREATION_MODE);
+                VPhysicsEditor.getInstance().CREATION_MODE = VModes.getMode(VPhysicsEditor.getInstance().CREATION_MODE, 1);
+                VPhysicsEditor.getInstance().creationModesJComboBox.setSelectedItem(VPhysicsEditor.getInstance().CREATION_MODE);
                 displayParticleType();
             }
         }
@@ -598,7 +604,7 @@ public class EngineMethods {
                 // Increment
                 PARTICLE_TYPE = EModes.getMode(PARTICLE_TYPE, 1);
                 displayParticleType();
-                updateParticleTypesRadios();
+                menuBar.updateParticleTypesRadios();
             }
         }
     }
@@ -746,7 +752,7 @@ public class EngineMethods {
      */
     public static void displayParticleType() {
         if (ENGINE_MODE == RAGDOLL_MODE) {
-            switch (VPhysicsEditor.CREATION_MODE) {
+            switch (VPhysicsEditor.getInstance().CREATION_MODE) {
                 case Point: Notifier.pushNotification("Point"); break;
                 case Stick: Notifier.pushNotification("Stick"); break;
                 case IKChain: Notifier.pushNotification("IKChain"); break;

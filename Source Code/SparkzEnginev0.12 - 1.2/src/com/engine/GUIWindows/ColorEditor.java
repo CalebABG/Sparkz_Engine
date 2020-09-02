@@ -8,6 +8,7 @@ import com.engine.ThinkingParticles.SCChoices;
 import com.engine.ThinkingParticles.SCCycle;
 import com.engine.ThinkingParticles.SCPicker;
 import com.engine.Utilities.Settings;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,20 +17,31 @@ import static com.engine.EngineHelpers.EBOOLS.ENGINE_CYCLE_COLORS;
 
 public class ColorEditor {
     private static ColorEditor thinkingParticlesUI = null;
-    public static JFrame frame;
+
     public Font font = new Font(Font.SERIF, Font.PLAIN, 18);
     public Font uiFont = new Font(Font.SERIF, Font.BOLD, 16);
-    public static CLabel[] labels = new CLabel[5];
+
+    public JFrame frame;
+    public CLabel[] labels = new CLabel[5];
 
     //public static void main(String[] args) {getInstance();}
 
-    public static void getInstance() {
-        if (thinkingParticlesUI == null) thinkingParticlesUI = new ColorEditor();
-        frame.toFront();
+    public static ColorEditor getInstance() {
+        if (thinkingParticlesUI == null)
+            thinkingParticlesUI = new ColorEditor();
+
+        thinkingParticlesUI.frame.toFront();
+
+        return thinkingParticlesUI;
     }
 
     private ColorEditor() {
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch (Exception e){EException.append(e);}
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            EException.append(e);
+        }
+
         frame = new JFrame("Thinking Particles Color Changer");
         frame.setIconImage(Settings.iconImage);
         frame.setSize(950, 250);
@@ -96,10 +108,10 @@ public class ColorEditor {
                 gl_colors_panel.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(gl_colors_panel.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(color_1_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE) .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
-                                .addComponent(color_2_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE) .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
-                                .addComponent(color_3_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE) .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
-                                .addComponent(color_4_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE) .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
+                                .addComponent(color_1_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
+                                .addComponent(color_2_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
+                                .addComponent(color_3_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
+                                .addComponent(color_4_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED) //.addGap(18)
                                 .addComponent(color_5_panel, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
                                 .addContainerGap())
         );
@@ -107,7 +119,7 @@ public class ColorEditor {
                 gl_colors_panel.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(gl_colors_panel.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(gl_colors_panel.createParallelGroup(GroupLayout.Alignment.TRAILING,false)
+                                .addGroup(gl_colors_panel.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(color_5_panel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(color_4_panel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(color_3_panel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -188,17 +200,18 @@ public class ColorEditor {
 
     private void loadColors() {
         if (Settings.colorsFileExists()) SavedColorsLoader.getInstance();
-        else JOptionPane.showConfirmDialog(frame,"<html><h3>Save a Color First</h3></html>","No Colors Saved", JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE);
+        else
+            JOptionPane.showConfirmDialog(frame, "<html><h3>Save a Color First</h3></html>", "No Colors Saved", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
     }
 
     private void setRandomColors() {
         Color[] colors = SCChoices.randomColor();
 
         SCChoices.setPresetColors(colors);
-        ColorTimeMachine.addColor(colors);
+        ColorTimeMachine.getInstance().addColor(colors);
 
-        if (ColorTimeMachine.timeMachine != null && ColorTimeMachine.colors_info.isSelected())
-            ColorTimeMachine.updateColorValues();
+        if (ColorTimeMachine.timeMachine != null && ColorTimeMachine.getInstance().colorsInfoToggleButton.isSelected())
+            ColorTimeMachine.getInstance().updateColorValues();
     }
 
     public void handleColorCycle(JButton cycle_colors) {
@@ -214,12 +227,17 @@ public class ColorEditor {
     }
 
     public static void setBackgroundColor(Color[] colors) {
-        labels[0].setBackground(colors[0]);
-        labels[1].setBackground(colors[1]);
-        labels[2].setBackground(colors[2]);
-        labels[3].setBackground(colors[3]);
-        labels[4].setBackground(colors[4]);
+        if (thinkingParticlesUI != null && thinkingParticlesUI.labels != null) {
+            thinkingParticlesUI.labels[0].setBackground(colors[0]);
+            thinkingParticlesUI.labels[1].setBackground(colors[1]);
+            thinkingParticlesUI.labels[2].setBackground(colors[2]);
+            thinkingParticlesUI.labels[3].setBackground(colors[3]);
+            thinkingParticlesUI.labels[4].setBackground(colors[4]);
+        }
     }
 
-    public void close(){thinkingParticlesUI = null; frame.dispose();}
+    public void close() {
+        frame.dispose();
+        thinkingParticlesUI = null;
+    }
 }

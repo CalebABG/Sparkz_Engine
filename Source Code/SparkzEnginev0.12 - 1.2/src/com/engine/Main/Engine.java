@@ -31,11 +31,11 @@ import static com.engine.GUIWindows.Notifier.headsUpNotifications;
 
 public class Engine {
     public static void main(String[] args) {
-        new EngineSplash(2000).display();
+        new EngineSplash(1500).display();
         SwingUtilities.invokeLater(() -> new Engine().start());
     }
 
-    //Adding slight performance boost + UI properties
+    // Adding slight performance boost + UI properties
     static {
         //Uncomment for slight performance kick: will cause gui tearing
         //System.setProperty("sun.java2d.opengl", "True");

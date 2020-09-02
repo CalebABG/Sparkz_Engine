@@ -15,8 +15,12 @@ public class SCCycle {
     public synchronized static void startCycle() {
         if (Settings.colorsFileExists()) {
             Settings.loadColors();
-        } // Needs Exception handling
-        time = new Timer();
+        }
+        // Needs Exception handling
+
+        if (time == null)
+            time = new Timer();
+
         time.scheduleAtFixedRate(new TimerTask() {public void run() {cycleColors();}}, 0, ENGINE_COLOR_CYCLE_RATE.value() * 1000);
     }
 
@@ -24,7 +28,7 @@ public class SCCycle {
         if (!Settings.colorsFileExists()) {
             Color[] randColors = SCChoices.randomColor();
             SCChoices.setPresetColors(randColors);
-            ColorTimeMachine.addColor(randColors);
+            ColorTimeMachine.getInstance().addColor(randColors);
         } else regularCycle();
     }
 
